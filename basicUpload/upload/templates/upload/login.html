@@ -1,0 +1,11 @@
+{% extends 'upload/home.html' %}
+{% block body %}
+<form action="{% url 'loginView' %}" method="POST">
+    {% csrf_token %}
+    <label for="Name">Username</label>
+    <input type="text" name="username" placeholder="Enter user name"/>
+    <label for="password">Password</label>
+    <input type="password" name="password" placeholder="Enter password" />
+    <input type="submit" value="login" />
+</form>
+{% endblock %}
