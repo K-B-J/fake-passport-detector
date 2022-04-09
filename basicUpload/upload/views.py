@@ -80,9 +80,9 @@ class verifyPage(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         if "verifier" not in request.session:            
             return HttpResponseRedirect(reverse("home"))
-        image = download_image()
+        # image = download_image()
         return render(request, "upload/verifyPage.html", context = {
-            "img": image,
+            "img": "",
             })
 
 
