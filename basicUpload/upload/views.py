@@ -11,9 +11,11 @@ from django.utils.safestring import mark_safe
 from .ipfsFiles import download_image
 # Create your views here.
 
+
 class homepage(View):
-    def get(self,request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         return render(request, "upload/home.html")
+
 
 class loginView(View):
     def get(self, request, *args, **kwargs):
@@ -22,12 +24,13 @@ class loginView(View):
         if "verifier" in request.session:
             return HttpResponseRedirect(reverse("verifyPage"))
         return render(request, "upload/login.html")
+
     def post(self, request, *args, **kwargs):
         username = request.POST.get("username")
         password = request.POST.get("password")
         user = authenticate(request, username=username, password=password)
         if user is not None:
-            typeOfUser = modUser.objects.get(user = user)
+            typeOfUser = modUser.objects.get(user=user)
             login(request, user)
             if typeOfUser.typeOfUser:
                 request.session["uploader"] = True
@@ -36,8 +39,10 @@ class loginView(View):
                 request.session["verifier"] = True
                 return HttpResponseRedirect(reverse("verifyPage"))
 
+
 class uploadPage(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = "/login"
+
     def get(self, request, *args, **kwargs):
         if "uploader" not in request.session:
             return HttpResponseRedirect(reverse("home"))
@@ -70,7 +75,8 @@ class uploadPage(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse("uploadPage"))
         
 class verifyPage(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = "/login"
+
     def get(self, request, *args, **kwargs):
         if "verifier" not in request.session:            
             return HttpResponseRedirect(reverse("home"))
@@ -79,10 +85,11 @@ class verifyPage(LoginRequiredMixin, View):
             "img": image,
             })
 
+
 class logoutView(View):
     def get(self, request, *args, **kwargs):
-        try:    
+        try:
             logout(request)
         except:
             pass
-        return HttpResponseRedirect(reverse('home'))
+        return HttpResponseRedirect(reverse("home"))
