@@ -148,51 +148,51 @@ def update_passport_details(passport, passnum, personalInfo, imagesInfo, passpor
         return {"success": False, "data": err}
 
 
-while True:
-    ip = int(input())
-    if ip == 0:
-        print(
-            new_passport(
-                passport,
-                "K103",
-                [
-                    "Binjola",
-                    "kaushal",
-                    "IND",
-                    "M",
-                    "14-11-2000",
-                    "Vashi",
-                    "Ganesh",
-                    "Neelima",
-                    "B-602,123",
-                ],
-                ["dsfew2232", "sdfsdf2321"],
-                ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
-            )
-        )
-    elif ip == 1:
-        print(get_passport_details(passport, "K103"))
-    elif ip == 2:
-        print(
-            update_passport_details(
-                passport,
-                "K103",
-                [
-                    "Binjola",
-                    "Kaushal",
-                    "IND",
-                    "M",
-                    "14-11-2000",
-                    "Vashi",
-                    "Ganesh",
-                    "Neelima",
-                    "B-602,123",
-                ],
-                ["dsfew2232", "sdfsdf2321"],
-                ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
-            )
-        )
-    elif ip == 3:
-        break
-    else:
-        continue
+# while True:
+#     ip = int(input())
+#     if ip == 0:
+#         print(
+#             new_passport(
+#                 passport,
+#                 "K103",
+#                 [
+#                     "Binjola",
+#                     "kaushal",
+#                     "IND",
+#                     "M",
+#                     "14-11-2000",
+#                     "Vashi",
+#                     "Ganesh",
+#                     "Neelima",
+#                     "B-602,123",
+#                 ],
+#                 ["dsfew2232", "sdfsdf2321"],
+#                 ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
+#             )
+#         )
+#     elif ip == 1:
+#         print(get_passport_details(passport, "K103"))
+#     elif ip == 2:
+#         print(
+#             update_passport_details(
+#                 passport,
+#                 "K103",
+#                 [
+#                     "Binjola",
+#                     "Kaushal",
+#                     "IND",
+#                     "M",
+#                     "14-11-2000",
+#                     "Vashi",
+#                     "Ganesh",
+#                     "Neelima",
+#                     "B-602,123",
+#                 ],
+#                 ["dsfew2232", "sdfsdf2321"],
+#                 ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
+#             )
+#         )
+#     elif ip == 3:
+#         break
+#     else:
+#         continue
