@@ -5,7 +5,7 @@
     <h1>Upload documents</h1>
     <form action="{% url 'uploadPage' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <!--<div class="form-group">
+        <div class="form-group">
             <input type="text" class="form-control" name="type" maxlength="1" pattern="[A-Z]{1}" placeholder="Enter type of passport" required/><br>
         </div>
         <div class="form-group">
@@ -13,7 +13,19 @@
 
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="holderName" pattern="[A-Za-z]{1,50}" placeholder="Enter name of passport holder" required/><br>
+            <input type="text" class="form-control" name="holderName" pattern="[A-Za-z]{1,50}" placeholder="Enter First name of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="countryCode" pattern="[A-Za-z]{3}" placeholder="Enter country code of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="nationality" pattern="[A-Za-z]{1,50}" placeholder="Enter nationality of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="surname" pattern="[A-Za-z]{1,50}" placeholder="Enter surname of passport holder" required/><br>
 
         </div>
         <div class="form-group">
@@ -23,12 +35,12 @@
                 <option value="Others">Others</option>
             </select><br>
     
-        </div>-->
+        </div>
         <div class="form-group">
             <input type="date" class="form-control" name="dob" placeholder="Enter date of birth" required /><br>
 
         </div>
-        <!--<div class="form-group">
+        <div class="form-group">
             <input type="text" class="form-control" name="placeOfBirth" pattern="[A-Za-z]{1,50}" placeholder="Enter place of birth" required /><br>
 
         </div>
@@ -43,12 +55,12 @@
         <div class="form-group">
             <input type="date" class="form-control" name="dateOfExpiry" required/><br>
             
-        </div>-->
+        </div>
         <div class="form-group">
             <input type="file" class="form-control" name="faceId" placeholder="Upload photo" accept="image/jpeg, image/png" required/><br>
             
         </div>
-        <!--<div class="form-group">
+        <div class="form-group">
             <input type="file" class="form-control" name="sign" placeholder="Upload signature" accept="image/jpeg, image/png" required/><br>
             
         </div>
@@ -86,7 +98,7 @@
         </div>
         <div class="form-group">            
             <input type="text" class="form-control" name="fileNum" placeholder="Enter file number" /><br>
-        </div>-->
+        </div>
         <div class="form-group">
             <input type="submit" class="btn btn-primary" value="Submit">
         </div>

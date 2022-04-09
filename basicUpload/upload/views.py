@@ -9,6 +9,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.safestring import mark_safe
 from .ipfsFiles import download_image
+from .deploy import *
+from .ipfsFiles import * 
 # Create your views here.
 
 
@@ -48,30 +50,34 @@ class uploadPage(LoginRequiredMixin, View):
             return HttpResponseRedirect(reverse("home"))
         return render(request, "upload/uploadPage.html")
     def post(self, request, *args, **kwargs):
-        # type = request.POST.get("type")
-        # passNum = request.POST.get("passNum")
-        # holderName = request.POST.get("holderName")
-        # gender = request.POST.get("gender")
+        typeOfPass = request.POST.get("type")
+        passNum = request.POST.get("passNum")
+        holderName = request.POST.get("holderName")
+        countryCode = request.POST.get("countryCode")
+        nationality = request.POST.get("nationality")
+        surname = request.POST.get("surname")
+        gender = request.POST.get("gender")
         dob = request.POST.get("dob")
-        # placeOfBirth = request.POST.get("placeOfBirth")
-        # placeOfIssue = request.POST.get("placeOfIssue")
-        # dateOfIssue = request.POST.get("dateOfIssue")
-        # dateOfExpiry = request.POST.get("dateOfExpiry")
+        placeOfBirth = request.POST.get("placeOfBirth")
+        placeOfIssue = request.POST.get("placeOfIssue")
+        dateOfIssue = request.POST.get("dateOfIssue")
+        dateOfExpiry = request.POST.get("dateOfExpiry")
         faceId = request.FILES.get("faceId")
-        # sign = request.FILES.get("sign")
-        # father = request.POST.get("father")
-        # mother = request.POST.get("mother")
-        # spouse = request.POST.get("spouse")
-        # address_1 = request.POST.get("address_1")
-        # address_2 = request.POST.get("address_2")
-        # address_3 = request.POST.get("address_3")
-        # address_4 = request.POST.get("address_4")
-        # oldPassNum = request.POST.get("oldPassNum")
-        # oldPlaceIssue = request.POST.get("oldPlaceIssue")
-        # oldDateIssue = request.POST.get("oldDateIssue")
-        # fileNum = request.POST.get("fileNum")
-        print(dob)
-        print(type(faceId.read()))
+        sign = request.FILES.get("sign")
+        father = request.POST.get("father")
+        mother = request.POST.get("mother")
+        spouse = request.POST.get("spouse")
+        address_1 = request.POST.get("address_1")
+        address_2 = request.POST.get("address_2")
+        address_3 = request.POST.get("address_3")
+        address_4 = request.POST.get("address_4")
+        oldPassNum = request.POST.get("oldPassNum")
+        oldPlaceIssue = request.POST.get("oldPlaceIssue")
+        oldDateIssue = request.POST.get("oldDateIssue")
+        fileNum = request.POST.get("fileNum")
+        faceIdHash = upload_image(faceId.name, faceId.read())
+        signIdHash = upload_image(sign.name, sign.read())
+        personal_info = [surname, ]
         return HttpResponseRedirect(reverse("uploadPage"))
         
 class verifyPage(LoginRequiredMixin, View):

@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-with open("basicUpload/upload/passport.sol", "r") as file:
+
+with open("./upload/passport.sol", "r") as file:
     passport_file = file.read()
 
 compiled_sol = compile_standard(
@@ -25,7 +26,7 @@ compiled_sol = compile_standard(
     solc_version="0.6.0",
 )
 
-with open("basicUpload/upload/compiled-sol.json", "w") as file:
+with open("./upload/compiled-sol.json", "w") as file:
     json.dump(compiled_sol, file)
 
 bytecode = compiled_sol["contracts"]["passport.sol"]["PassportContract"]["evm"][
@@ -39,8 +40,8 @@ contract_id, contract_interface = compiled_sol.popitem()
 
 # Web3 to connect to ganache
 w3 = Web3(Web3.HTTPProvider(os.getenv("HTTP_PROVIDER")))
-chain_id = 1337
-my_address = "0xd9d25a925183100c4288Fac67B760F65419284B5"
+chain_id = 4
+my_address = "0x7074ee5A5F811Be196D3AFccD960cE15EF2E11Cb"
 private_key = os.getenv("PRIVATE_KEY")
 
 
@@ -75,7 +76,7 @@ def deployContract(Passport):
     return txnReceipt
 
 
-contract_address = ""
+contract_address = "0xC42013762D5eBDB6b6A17473b40716AeDA968041"
 
 if contract_address == "":
     txnReceipt = deployContract(Passport)
@@ -84,11 +85,12 @@ if contract_address == "":
     print("Contract Deployed!")
 else:
     passport = w3.eth.contract(address=contract_address, abi=abi)
-    print("Contract Deployed!")
+    print("Contract Fetched!")
 
 
-def new_passport(passport, passnum, personal_info, imagesInfo, passportInfo):
+def new_passport(passnum, personal_info, imagesInfo, passportInfo):
     global nonce
+    Passport = w3.eth.contract(abi=abi, bytecode=bytecode)
     try:
         store_transaction = passport.functions.storePassport(
             passnum, personal_info, imagesInfo, passportInfo
