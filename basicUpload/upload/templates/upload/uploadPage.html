@@ -1,4 +1,32 @@
 {% extends 'upload/layout.html' %}
 {% block body %}
     <h1>Upload documents</h1>
+    <form action="#" url="{% url 'uploadPage' %}" enctype="multipart/form-data">
+        <input type="text" name="type" placeholder="Enter type of passport" required/><br>
+        <input type="text" name="passNum" placeholder="Enter passport number" required/><br>
+        <input type="text" name="holderName" placeholder="Enter name of passport holder" required/><br>
+        <select name="gender" >
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Others">Others</option>
+        </select><br>
+        <input type="date" name="dob" placeholder="Enter date of birth" required /><br>
+        <input type="text" name="placeOfBirth" placeholder="Enter place of birth" required /><br>
+        <input type="text" name="placeOfIssue" placeholder="Enter place of issue of passport" required><br>
+        <input type="date" name="dateOfIssue" required/><br>
+        <input type="date" name="dateOfExpiry" required/><br>
+        <input type="file" name="faceId" placeholder="Upload photo" accept="image/jpeg, image/png" required/><br>
+        <input type="file" name="sign" placeholder="Upload signature" accept="image/jpeg, image/png" required/><br>
+        <input type="text" name="father" placeholder="Enter father's name" required /><br>
+        <input type="text" name="mother" placeholder="Enter mother's name" required /><br>
+        <input type="text" name="spouse" placeholder="Enter spouse's name (optional)" /><br>
+        <input type="text" name="address_1" placeholder="Address Line 1" required /><br>
+        <input type="text" name="address_2" placeholder="Address Line 2" required /><br>
+        <input type="text" name="address_3" placeholder="Address Line 3" required /><br>
+        <input type="text" name="address_4" placeholder="Address Line 4(optional)" /><br>
+        <input type="text" name="oldPassNum" placeholder="Enter previous passport number(optional)" /><br>
+        <input type="text" name="oldPlaceIssue" placeholder="Enter place of issue of previous passport(optional)" /><br>
+        <input type="date" name="oldDateIssue" placeholder="Enter date of issue of previous passport(optional)" /><br>
+        <input type="text" name="fileNum" placeholder="Enter file number" /><br>
+    </form>
 {% endblock %}
