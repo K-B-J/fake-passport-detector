@@ -39,8 +39,8 @@ contract_id, contract_interface = compiled_sol.popitem()
 
 # Web3 to connect to ganache
 w3 = Web3(Web3.HTTPProvider(os.getenv("HTTP_PROVIDER")))
-chain_id = 4
-my_address = "0x3CA0790A8BC2A2BBa7173FDCe363a887BA7fDE3f"
+chain_id = 1337
+my_address = "0xd9d25a925183100c4288Fac67B760F65419284B5"
 private_key = os.getenv("PRIVATE_KEY")
 
 
@@ -75,7 +75,7 @@ def deployContract(Passport):
     return txnReceipt
 
 
-contract_address = "0x6C6A9Dc534708293B0BF888611f51Dd27D792F30"
+contract_address = ""
 
 if contract_address == "":
     txnReceipt = deployContract(Passport)
@@ -87,11 +87,11 @@ else:
     print("Contract Deployed!")
 
 
-def new_passport(passport, passnum, name, dob):
+def new_passport(passport, passnum, personal_info, imagesInfo, passportInfo):
     global nonce
     try:
         store_transaction = passport.functions.storePassport(
-            passnum, name, dob
+            passnum, personal_info, imagesInfo, passportInfo
         ).buildTransaction(
             {
                 "chainId": chain_id,
@@ -114,6 +114,7 @@ def new_passport(passport, passnum, name, dob):
 
 
 def get_passport_details(passport, passnum):
+    global nonce
     try:
         data = passport.functions.getPassportDetails(passnum).call()
         return {"success": True, "data": data}
@@ -121,11 +122,11 @@ def get_passport_details(passport, passnum):
         return {"success": False, "data": err}
 
 
-def update_passport_details(passport, passnum, name):
+def update_passport_details(passport, passnum, personalInfo, imagesInfo, passportInfo):
     global nonce
     try:
         store_transaction = passport.functions.updateDetails(
-            passnum, name
+            passnum, personalInfo, imagesInfo, passportInfo
         ).buildTransaction(
             {
                 "chainId": chain_id,
@@ -147,15 +148,51 @@ def update_passport_details(passport, passnum, name):
         return {"success": False, "data": err}
 
 
-# while True:
-#     ip = int(input())
-#     if ip == 0:
-#         print(new_passport(passport, "K103", "kaushal", "14-11-2000"))
-#     elif ip == 1:
-#         print(get_passport_details(passport, "K103"))
-#     elif ip == 2:
-#         print(update_passport_details(passport, "K103", "Kaushal"))
-#     elif ip == 3:
-#         break
-#     else:
-#         continue
+while True:
+    ip = int(input())
+    if ip == 0:
+        print(
+            new_passport(
+                passport,
+                "K103",
+                [
+                    "Binjola",
+                    "kaushal",
+                    "IND",
+                    "M",
+                    "14-11-2000",
+                    "Vashi",
+                    "Ganesh",
+                    "Neelima",
+                    "B-602,123",
+                ],
+                ["dsfew2232", "sdfsdf2321"],
+                ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
+            )
+        )
+    elif ip == 1:
+        print(get_passport_details(passport, "K103"))
+    elif ip == 2:
+        print(
+            update_passport_details(
+                passport,
+                "K103",
+                [
+                    "Binjola",
+                    "Kaushal",
+                    "IND",
+                    "M",
+                    "14-11-2000",
+                    "Vashi",
+                    "Ganesh",
+                    "Neelima",
+                    "B-602,123",
+                ],
+                ["dsfew2232", "sdfsdf2321"],
+                ["P", "IND", "Thane", "14-11-2022", "14-11-2032", "asd", "VSH123"],
+            )
+        )
+    elif ip == 3:
+        break
+    else:
+        continue
