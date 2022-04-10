@@ -1,3 +1,4 @@
+from itertools import count
 from django.shortcuts import render
 from django.views.generic import View
 from .models import modUser
@@ -7,8 +8,8 @@ from django.http import HttpResponseRedirect
 from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from datetime import datetime
 from django.utils.safestring import mark_safe
-from .ipfsFiles import download_image
 from .deploy import *
 from .ipfsFiles import * 
 # Create your views here.
@@ -74,10 +75,15 @@ class uploadPage(LoginRequiredMixin, View):
         oldPassNum = request.POST.get("oldPassNum")
         oldPlaceIssue = request.POST.get("oldPlaceIssue")
         oldDateIssue = request.POST.get("oldDateIssue")
+        oldPassNumDateAndIssue = oldPassNum + ' ' + str(oldDateIssue) + ' ' + str(oldPlaceIssue)
         fileNum = request.POST.get("fileNum")
         faceIdHash = upload_image(faceId.name, faceId.read())
         signIdHash = upload_image(sign.name, sign.read())
-        personal_info = [surname, ]
+        address = address_1+ ';' + address_2 + ';' +address_3 + ';' + address_4
+        personal_info = [surname, holderName, nationality, gender, str(dob), placeOfBirth, father, mother, address]
+        imagesInfo = [faceIdHash, signIdHash]
+        passportInfo = [typeOfPass, countryCode, placeOfIssue, str(dateOfIssue), str(dateOfExpiry), oldPassNumDateAndIssue, fileNum]
+        print(new_passport(passnum=passNum, personal_info=personal_info, imagesInfo=imagesInfo, passportInfo=passportInfo))
         return HttpResponseRedirect(reverse("uploadPage"))
         
 class verifyPage(LoginRequiredMixin, View):
@@ -86,10 +92,28 @@ class verifyPage(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         if "verifier" not in request.session:            
             return HttpResponseRedirect(reverse("home"))
-        # image = download_image()
         return render(request, "upload/verifyPage.html", context = {
-            "img": "",
-            })
+            "get_details": False
+        })
+    def post(self, request, *args, **kwargs):
+        passNum = request.POST.get("passNum")
+        all_details = get_passport_details("K103")
+        if not all_details['success']:
+            context = {
+                "get_details": False,
+                "error": all_details['data']
+            }
+        else:
+            details = all_details['data']
+            personal_info = details[0:10].copy()
+            imagesInfo = [details[10], details[11]]
+            images = [download_image(details[10]), download_image(details[11])]
+            passportInfo = details[12:].copy()
+            context = {
+            "get_details": True,
+            "images": images, "passportInfo": passportInfo, "personal_info": personal_info
+            }
+        return render(request, "upload/verifyPage.html", context = context)
 
 
 class logoutView(View):

@@ -90,7 +90,6 @@ else:
 
 def new_passport(passnum, personal_info, imagesInfo, passportInfo):
     global nonce
-    Passport = w3.eth.contract(abi=abi, bytecode=bytecode)
     try:
         store_transaction = passport.functions.storePassport(
             passnum, personal_info, imagesInfo, passportInfo
@@ -115,8 +114,9 @@ def new_passport(passnum, personal_info, imagesInfo, passportInfo):
         return {"success": False, "data": err}
 
 
-def get_passport_details(passport, passnum):
+def get_passport_details(passnum):
     global nonce
+    Passport = w3.eth.contract(abi=abi, bytecode=bytecode)
     try:
         data = passport.functions.getPassportDetails(passnum).call()
         return {"success": True, "data": data}

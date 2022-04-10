@@ -7,9 +7,8 @@ def upload_image(name, file):
     resp = requests.post("http://127.0.0.1:5001/api/v0/add", files={name: file})
     ipfs_hash=resp.json()["Hash"]
     return ipfs_hash
-def download_image():
-    print("Hello")
-    resp = requests.post("http://127.0.0.1:5001/api/v0/cat?arg=QmR7MvAVHsnfnMXUtSVU375uSBoFV2dX1zqNid8j2DtQbT")
+def download_image(hash):
+    resp = requests.post(f"http://127.0.0.1:5001/api/v0/cat?arg={hash}")
     image_file = io.BytesIO(resp.content)
     image = Image.open(image_file)
     buf = io.BytesIO()

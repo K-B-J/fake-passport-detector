@@ -1,6 +1,22 @@
 {% extends 'upload/layout.html' %}
 {% block body %}
 <div class="container">
-    <img src="data:image/png;base64,{{ img }}" alt="Ipfs image" />
+    <form action="{% url 'verifyPage' %}" method="POST">
+        <div class="form-group">
+            <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required/><br>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+    {% if get_details %}
+    <table>
+        <caption>
+            Verify details
+        </caption>
+    </table>
+    <img src="data:image/png;base64,{{ images.0 }}" alt="Ipfs image" />
+    <img src="data:image/png;base64,{{ images.1 }}" alt="Ipfs image" />
+    {% endif %}
 </div>
 {% endblock %}
