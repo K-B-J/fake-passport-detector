@@ -2,6 +2,7 @@
 {% block body %}
 <div class="container">
     <form action="{% url 'verifyPage' %}" method="POST">
+        {% csrf_token %}
         <div class="form-group">
             <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required/><br>
         </div>
@@ -10,10 +11,15 @@
         </div>
     </form>
     {% if get_details %}
-    <table>
+    <table class="table">
         <caption>
             Verify details
         </caption>
+        {% for i in passportInfo %}
+            <tr>
+                <td>{{ i }}</td>
+            </tr>
+        {% endfor %}
     </table>
     <img src="data:image/png;base64,{{ images.0 }}" alt="Ipfs image" />
     <img src="data:image/png;base64,{{ images.1 }}" alt="Ipfs image" />

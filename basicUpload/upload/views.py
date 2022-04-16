@@ -90,8 +90,6 @@ class verifyPage(LoginRequiredMixin, View):
     login_url = "/login"
 
     def get(self, request, *args, **kwargs):
-        if "verifier" not in request.session:            
-            return HttpResponseRedirect(reverse("home"))
         return render(request, "upload/verifyPage.html", context = {
             "get_details": False
         })
