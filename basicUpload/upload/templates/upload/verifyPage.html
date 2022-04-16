@@ -4,29 +4,276 @@
 <link rel="stylesheet" type="text/css" href="{% static 'upload/verifyPage.css' %}">
 {% endblock %}
 {% block body %}
-<div class="container">
-    <form action="{% url 'verifyPage' %}" method="POST">
-        {% csrf_token %}
-        <div class="form-group">
-            <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required/><br>
+<div class="container-fluid">
+    &nbsp;
+    <div class="row mb-4">
+        <div class="col"></div>
+        <div class="col-4 text-center">
+            <form action="{% url 'verifyPage' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" name="passNum" placeholder="Enter passport number"
+                        required /><br>
+                </div>
+                <div class="form-group">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Submit">
-        </div>
-    </form>
+        <div class="col"></div>
+    </div>
+
     {% if get_details %}
-    <table class="table">
-        <caption>
-            Verify details
-        </caption>
-        {% for i in passportInfo %}
-            <tr>
-                <td>{{ i }}</td>
-            </tr>
-        {% endfor %}
-    </table>
-    <img src="data:image/png;base64,{{ images.0 }}" alt="Ipfs image" />
-    <img src="data:image/png;base64,{{ images.1 }}" alt="Ipfs image" />
+    <div class="row text-center">
+        <h2>पहला पेज/First Page</h2>
+    </div>
+    <div class="row my-4">
+        <div class="col-5">
+            <div class="row">
+                <img src="data:image/png;base64,{{ images.0 }}" alt="Ipfs image" id="face-photo" />
+            </div>
+            <div class="row my-2">
+                <img src="data:image/png;base64,{{ images.1 }}" alt="Ipfs image" id="sign-photo" />
+            </div>
+        </div>
+
+        <div class="col-1"></div>
+        <div class="col-6">
+            <!-- passport type, country code and passport number -->
+            <div class="row mx-2">
+                <div class="col-4">
+                    <span class="passport-span-label">
+                        प्रकार/Type:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ms-5">
+                        {{ passportInfo.ptype }}
+                    </span>
+                </div>
+                <div class="col-4 text-center">
+                    <span class="passport-span-label">
+                        देश कोड/Country Code:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ">
+                        {{ passportInfo.countryCode }}
+                    </span>
+                </div>
+                <div class="col-4 text-center">
+                    <span class="passport-span-label">
+                        पासपोर्ट संख्या/Passport No:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ">
+                        {{ passport_num }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- surname -->
+            <div class="row my-4 mx-2">
+                <span class="passport-span-label">
+                    उपनाम/Surname:
+                </span>
+                <br>
+                <div class="passport-span-content w-100">
+                    {{ personal_info.surname }}
+                </div>
+            </div>
+
+            <!-- given name -->
+            <div class="row my-4 mx-2">
+                <span class="passport-span-label">
+                    प्रदत्त नाम/Given Name:
+                </span>
+                <br>
+                <div class="passport-span-content w-100">
+                    {{ personal_info.name }}
+                </div>
+            </div>
+
+            <!-- nationality, sex, date of birth -->
+            <div class="row my-4 mx-2">
+                <div class="col-4">
+                    <span class="passport-span-label">
+                        राष्ट्रीयता/Nationality:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ms-5">
+                        {{ personal_info.nationality }}
+                    </span>
+                </div>
+                <div class="col-4 text-center">
+                    <span class="passport-span-label">
+                        लिंग/Sex:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ">
+                        {{ personal_info.sex }}
+                    </span>
+                </div>
+                <div class="col-4 text-center">
+                    <span class="passport-span-label">
+                        जन्म की तारीख/ Date of Birth:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ">
+                        {{ personal_info.dob }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Place of birth -->
+            <div class="row my-4 mx-2">
+                <span class="passport-span-label">
+                    जन्म स्थान/Place of Birth:
+                </span>
+                <br>
+                <div class="passport-span-content w-100">
+                    {{ personal_info.placeOfBirth }}
+                </div>
+            </div>
+
+            <!-- Place of issue -->
+            <div class="row my-4 mx-2">
+                <span class="passport-span-label">
+                    जारी करने का स्थान/Place of issue:
+                </span>
+                <br>
+                <div class="passport-span-content w-100">
+                    {{ passportInfo.placeOfIssue }}
+                </div>
+            </div>
+
+            <!-- date of issue, date of expiry -->
+            <div class="row my-4 mx-2">
+                <div class="col-6">
+                    <span class="passport-span-label">
+                        जारी करने की तिथि/Date of issue:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ms-5">
+                        {{ passportInfo.dateOfIssue }}
+                    </span>
+                </div>
+                <div class="col-6 text-center">
+                    <span class="passport-span-label">
+                        समाप्ति की तिथि/Date of expiry:
+                    </span>
+                    <br>
+                    <span class="text-center passport-span-content ">
+                        {{ passportInfo.dateOfExpiry }}
+                    </span>
+                </div>
+            </div>
+
+
+
+        </div>
+        <!-- {{ passportInfo }} -->
+        <!-- {
+            "ptype": "P",
+            "countryCode": "Doe",
+            "placeOfIssue": "Thane",
+            "dateOfIssue": "2022-04-23",
+            "dateOfExpiry": "2025-11-23",
+            "oldPassNumDateAndIssue": " 2022-04-30 ",
+            "fileNum": "F101",
+        } -->
+        <!-- {{ personal_info }} -->
+        <!-- {
+            "surname": "Doe",
+            "name": "Jane",
+            "nationality": "IND",
+            "sex": "Female",
+            "dob": "2005-06-16",
+            "placeOfBirth": "Thane",
+            "father": "Bob",
+            "mother": "Alice",
+            "currentAddress": "Red Strt ;Mumbai;Maharashtra;",
+        } -->
+        <!-- {{ passport_num }} -->
+        <!-- K111 -->
+    </div>
+
+
+
+
+
+    <div class="row text-center ma-5">
+        <h2>अंतिम पेज/Last Page</h2>
+    </div>
+
+    <!-- Name of Father/Legal Guardian -->
+    <div class="row my-4 mx-5">
+        <span class="passport-span-label">
+            पिता/कानूनी अभिभावक का नाम/Name of Father/Legal Guardian:
+        </span>
+        <br>
+        <div class="passport-span-content w-100">
+            {{ personal_info.father }}
+        </div>
+    </div>
+
+    <!-- Name of Mother -->
+    <div class="row my-4 mx-5">
+        <span class="passport-span-label">
+            माता का नाम/Name of Mother:
+        </span>
+        <br>
+        <div class="passport-span-content w-100">
+            {{ personal_info.mother }}
+        </div>
+    </div>
+
+    <!-- address -->
+    <div class="row my-4 mx-5">
+        <span class="passport-span-label">
+            पता/Address:
+        </span>
+        <br>
+        <div class="passport-span-content w-100">
+            {{ personal_info.currentAddress.0 }}
+        </div>
+        <div class="passport-span-content w-100">
+            {{ personal_info.currentAddress.1 }}
+        </div>
+        <div class="passport-span-content w-100">
+            {{ personal_info.currentAddress.2 }}
+        </div>
+    </div>
+
+    <!-- Old passport no. with date and place of issue -->
+    <div class="row my-4 mx-5">
+        <span class="passport-span-label">
+            पुराना पासपोर्ट नं. जारी करने की तिथि और स्थान के साथ/Old passport no. with date and place of issue:
+        </span>
+        <br>
+        <div class="passport-span-content w-100">
+            {{ passportInfo.oldPassNumDateAndIssue }}
+        </div>
+    </div>
+
+    <!-- File number -->
+    <div class="row my-4 mx-5">
+        <span class="passport-span-label">
+            फाइल संख्या/File number:
+        </span>
+        <br>
+        <div class="passport-span-content w-100">
+            {{ passportInfo.fileNum }}
+        </div>
+    </div>
+    &nbsp;
+
+
+    {% else %}
+    <div class="text-center" id="no-details">
+        <h2>Enter Passport Number</h2>
+        <h3>To Obtain Person Details</h3>
+    </div>
     {% endif %}
+
+
 </div>
 {% endblock %}

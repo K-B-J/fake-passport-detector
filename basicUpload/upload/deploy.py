@@ -119,6 +119,7 @@ def get_passport_details(passnum):
     Passport = w3.eth.contract(abi=abi, bytecode=bytecode)
     try:
         data = passport.functions.getPassportDetails(passnum).call()
+        print("Data obtained!")
         return {"success": True, "data": data}
     except exceptions.SolidityError as err:
         return {"success": False, "data": err}
