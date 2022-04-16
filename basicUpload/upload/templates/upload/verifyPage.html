@@ -1,4 +1,8 @@
 {% extends 'upload/layout.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'upload/verifyPage.css' %}">
+{% endblock %}
 {% block body %}
 <div class="container">
     <form action="{% url 'verifyPage' %}" method="POST">

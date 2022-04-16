@@ -1,4 +1,8 @@
 {% extends 'upload/home.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'upload/login.css' %}">
+{% endblock %}
 {% block body %}
 <form action="{% url 'loginView' %}" method="POST">
     {% csrf_token %}

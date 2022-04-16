@@ -1,5 +1,8 @@
 {% extends 'upload/layout.html' %}
 {% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'upload/uploadPage.css' %}">
+{% endblock %}
 {% block body %}
     <div class="container">
     <h1>Upload documents</h1>

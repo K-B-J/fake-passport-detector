@@ -1,4 +1,8 @@
 {% extends 'upload/layout.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'upload/home.css' %}">
+{% endblock %}
 {% block body %}
     <h1>Hello</h1>
 {% endblock %}
