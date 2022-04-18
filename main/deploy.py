@@ -125,7 +125,7 @@ def get_passport_details(passnum):
         return {"success": False, "data": err}
 
 
-def update_passport_details(passport, passnum, personalInfo, imagesInfo, passportInfo):
+def update_passport_details(passnum, personalInfo, imagesInfo, passportInfo):
     global nonce
     try:
         store_transaction = passport.functions.updateDetails(

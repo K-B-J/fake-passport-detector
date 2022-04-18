@@ -114,7 +114,7 @@ class verifyPage(LoginRequiredMixin, View):
     login_url = "/login"
 
     def get(self, request, *args, **kwargs):
-        return render(request, "upload/verifyPage.html", context={"get_details": False})
+        return render(request, "verifyPage.html", context={"get_details": False})
 
     def post(self, request, *args, **kwargs):
         passNum = request.POST.get("passNum")
@@ -122,9 +122,13 @@ class verifyPage(LoginRequiredMixin, View):
         if "uploader" in request.session:
             update_access = True
         else:
-            update_access=False
+            update_access = False
         if not all_details["success"]:
-            context = {"get_details": False, "update_access": False, "error": all_details["data"]}
+            context = {
+                "get_details": False,
+                "update_access": False,
+                "error": all_details["data"],
+            }
         else:
             details = all_details["data"]
             passport_num = details[0]
@@ -157,7 +161,9 @@ class verifyPage(LoginRequiredMixin, View):
                 passportInfo[passportInformationArr[index]] = value
             print(personal_info)
             personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
-            passportInfo["oldPassNumDateAndIssue"] = passportInfo["oldPassNumDateAndIssue"].split(";")
+            passportInfo["oldPassNumDateAndIssue"] = passportInfo[
+                "oldPassNumDateAndIssue"
+            ].split(";")
             print(passportInfo)
             # personal_info = details[1:10].copy()
             images = [download_image(details[10]), download_image(details[11])]
@@ -170,7 +176,7 @@ class verifyPage(LoginRequiredMixin, View):
                 "passport_num": passport_num,
                 "update_access": update_access,
             }
-        return render(request, "upload/verifyPage.html", context=context)
+        return render(request, "verifyPage.html", context=context)
 
 
 class logoutView(View):
@@ -183,12 +189,12 @@ class logoutView(View):
 
 
 class updatePage(LoginRequiredMixin, View):
-    login_url = '/login'
+    login_url = "/login"
 
     def get(self, request, *args, **kwargs):
         if "uploader" not in request.session:
             return HttpResponseRedirect(reverse("home"))
-        all_details = get_passport_details(self.kwargs['passNum'])
+        all_details = get_passport_details(self.kwargs["passNum"])
         if not all_details["success"]:
             context = {"get_details": False, "error": all_details["data"]}
         else:
@@ -234,7 +240,7 @@ class updatePage(LoginRequiredMixin, View):
                 "personal_info": personal_info,
                 "passport_num": passport_num,
             }
-        return render(request, "upload/updatePage.html", context=context)
+        return render(request, "updatePage.html", context=context)
 
     def post(self, request, *args, **kwargs):
         typeOfPass = request.POST.get("type")
@@ -296,10 +302,12 @@ class updatePage(LoginRequiredMixin, View):
             fileNum,
         ]
         # print(f"Hello: {gender}")
-        print(update_passport_details(
-            passnum=self.kwargs['passNum'],
-            personalInfo=personal_info,
-            imagesInfo=imagesInfo,
-            passportInfo=passportInfo,
-        ))
+        print(
+            update_passport_details(
+                passnum=self.kwargs["passNum"],
+                personalInfo=personal_info,
+                imagesInfo=imagesInfo,
+                passportInfo=passportInfo,
+            )
+        )
         return HttpResponseRedirect(reverse("verifyPage"))
