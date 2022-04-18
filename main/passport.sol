@@ -22,6 +22,7 @@ contract PassportContract {
         string placeOfBirth;
         string father;
         string mother;
+        string spouse;
         string currentAddress;
     }
 
@@ -64,7 +65,7 @@ contract PassportContract {
     function getPassportDetails(string memory _passnum)
         public
         view
-        returns (string[19] memory)
+        returns (string[20] memory)
     {
         return [
             passportMap[_passnum].passnum,
@@ -76,6 +77,7 @@ contract PassportContract {
             passportMap[_passnum].personalDetails.placeOfBirth,
             passportMap[_passnum].personalDetails.father,
             passportMap[_passnum].personalDetails.mother,
+            passportMap[_passnum].personalDetails.spouse,
             passportMap[_passnum].personalDetails.currentAddress,
             passportMap[_passnum].images.facePhoto,
             passportMap[_passnum].images.signaturePhoto,

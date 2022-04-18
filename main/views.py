@@ -87,6 +87,7 @@ class uploadPage(LoginRequiredMixin, View):
             placeOfBirth,
             father,
             mother,
+            spouse,
             address,
         ]
         imagesInfo = [faceIdHash, signIdHash]
@@ -141,6 +142,7 @@ class verifyPage(LoginRequiredMixin, View):
                 "placeOfBirth",
                 "father",
                 "mother",
+                "spouse",
                 "currentAddress",
             ]
             passportInformationArr = [
@@ -155,19 +157,15 @@ class verifyPage(LoginRequiredMixin, View):
             personal_info = {}
             passportInfo = {}
 
-            for index, value in enumerate(details[1:10]):
+            for index, value in enumerate(details[1:11]):
                 personal_info[personalDetailsArr[index]] = value
-            for index, value in enumerate(details[12:]):
+            for index, value in enumerate(details[13:]):
                 passportInfo[passportInformationArr[index]] = value
-            print(personal_info)
             personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
             passportInfo["oldPassNumDateAndIssue"] = passportInfo[
                 "oldPassNumDateAndIssue"
             ].split(";")
-            print(passportInfo)
-            # personal_info = details[1:10].copy()
-            images = [download_image(details[10]), download_image(details[11])]
-            # passportInfo = details[12:].copy()
+            images = [download_image(details[11]), download_image(details[12])]
             context = {
                 "get_details": True,
                 "images": images,
@@ -301,7 +299,6 @@ class updatePage(LoginRequiredMixin, View):
             oldPassNumDateAndIssue,
             fileNum,
         ]
-        # print(f"Hello: {gender}")
         print(
             update_passport_details(
                 passnum=self.kwargs["passNum"],

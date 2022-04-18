@@ -7,7 +7,7 @@ import os
 load_dotenv()
 install_solc("0.6.0")
 
-contract_address = "0xC42013762D5eBDB6b6A17473b40716AeDA968041"
+contract_address = "0x286cc2B2D00827B0a29A655cf387403c79d17151"
 
 with open("./main/passport.sol", "r") as file:
     passport_file = file.read()
