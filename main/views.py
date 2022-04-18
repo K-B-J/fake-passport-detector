@@ -207,6 +207,7 @@ class updatePage(LoginRequiredMixin, View):
                 "placeOfBirth",
                 "father",
                 "mother",
+                "spouse",
                 "currentAddress",
             ]
             passportInformationArr = [
@@ -221,16 +222,13 @@ class updatePage(LoginRequiredMixin, View):
             personal_info = {}
             passportInfo = {}
 
-            for index, value in enumerate(details[1:10]):
+            for index, value in enumerate(details[1:11]):
                 personal_info[personalDetailsArr[index]] = value
-            for index, value in enumerate(details[12:]):
+            for index, value in enumerate(details[13:]):
                 passportInfo[passportInformationArr[index]] = value
             personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
-
-            request.session["images"] = [details[10], details[11]]
-            # personal_info = details[1:10].copy()
-            images = [download_image(details[10]), download_image(details[11])]
-            # passportInfo = details[12:].copy()
+            request.session["images"] = [details[11], details[12]]
+            images = [download_image(details[11]), download_image(details[12])]
             context = {
                 "get_details": True,
                 "images": images,
@@ -242,7 +240,6 @@ class updatePage(LoginRequiredMixin, View):
 
     def post(self, request, *args, **kwargs):
         typeOfPass = request.POST.get("type")
-        # passNum = request.POST.get("passNum")
         holderName = request.POST.get("holderName")
         countryCode = request.POST.get("countryCode")
         nationality = request.POST.get("nationality")
@@ -286,6 +283,7 @@ class updatePage(LoginRequiredMixin, View):
             placeOfBirth,
             father,
             mother,
+            spouse,
             address,
         ]
 
