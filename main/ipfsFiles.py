@@ -10,19 +10,20 @@ load_dotenv()
 
 def upload_image(name, file):
     resp = requests.post(
-        os.environ.get("IPFS_ENDPOINT") + "/api/v0/add", files={name: file}
+        "https://api.web3.storage/upload",
+        headers={"Authorization": "Bearer " + os.environ.get("IPFS_TOKEN")},
+        data=file,
     )
-    ipfs_hash = resp.json()["Hash"]
+    ipfs_hash = resp.json()["cid"]
     return ipfs_hash
 
 
-def download_image(hash):
-    resp = requests.post(os.environ.get("IPFS_ENDPOINT") + f"/api/v0/cat?arg={hash}")
+def download_image(cid):
+    resp = requests.get("https://dweb.link/ipfs/" + cid, allow_redirects=True)
     image_file = io.BytesIO(resp.content)
     image = Image.open(image_file)
     buf = io.BytesIO()
-    image.save(buf, format="png")
+    image.save(buf, format="PNG")
     byte_im = buf.getvalue()
-    print(type(byte_im))
     image_final = base64.b64encode(byte_im).decode("utf-8")
     return image_final
