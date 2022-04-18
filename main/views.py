@@ -171,3 +171,56 @@ class logoutView(View):
         except:
             pass
         return HttpResponseRedirect(reverse("home"))
+
+
+class updatePage(LoginRequiredMixin, View):
+    login_url = "/login"
+
+    def get(self, request, *args, **kwargs):
+        all_details = get_passport_details(self.kwargs["passNum"])
+        if not all_details["success"]:
+            context = {"get_details": False, "error": all_details["data"]}
+        else:
+            details = all_details["data"]
+            passport_num = details[0]
+            personalDetailsArr = [
+                "surname",
+                "name",
+                "nationality",
+                "sex",
+                "dob",
+                "placeOfBirth",
+                "father",
+                "mother",
+                "currentAddress",
+            ]
+            passportInformationArr = [
+                "ptype",
+                "countryCode",
+                "placeOfIssue",
+                "dateOfIssue",
+                "dateOfExpiry",
+                "oldPassNumDateAndIssue",
+                "fileNum",
+            ]
+            personal_info = {}
+            passportInfo = {}
+
+            for index, value in enumerate(details[1:10]):
+                personal_info[personalDetailsArr[index]] = value
+            for index, value in enumerate(details[12:]):
+                passportInfo[passportInformationArr[index]] = value
+            personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
+
+            request.session["images"] = [details[10], details[11]]
+            # personal_info = details[1:10].copy()
+            images = [download_image(details[10]), download_image(details[11])]
+            # passportInfo = details[12:].copy()
+            context = {
+                "get_details": True,
+                "images": images,
+                "passportInfo": passportInfo,
+                "personal_info": personal_info,
+                "passport_num": passport_num,
+            }
+        return render(request, "updatePage.html", context=context)
