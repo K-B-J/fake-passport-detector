@@ -1,1 +1,2 @@
-basicUpload/upload/.env
+*__pycache__
+.env
