@@ -237,7 +237,16 @@
         </div>
     </div>
     &nbsp;
-
+    {% if update_access %}
+    <div class="row mb-4">
+        <div class="col">
+            <div class="col-4 text-center">
+                <a href="{% url 'updatePage' passport_num %}"><button class="btn btn-primary">Edit</button></a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
 
     {% else %}
     <div class="text-center" id="no-details">
