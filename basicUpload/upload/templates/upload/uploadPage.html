@@ -1,0 +1,110 @@
+{% extends 'upload/layout.html' %}
+{% load static %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'upload/uploadPage.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="container">
+    <h1>Upload documents</h1>
+    <form action="{% url 'uploadPage' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" class="form-control" name="type" maxlength="1" pattern="[A-Z]{1}" placeholder="Enter type of passport" required/><br>
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="holderName" pattern="[A-Za-z]{1,50}" placeholder="Enter First name of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="countryCode" pattern="[A-Za-z]{3}" placeholder="Enter country code of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="nationality" pattern="[A-Za-z]{1,50}" placeholder="Enter nationality of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="surname" pattern="[A-Za-z]{1,50}" placeholder="Enter surname of passport holder" required/><br>
+
+        </div>
+        <div class="form-group">
+            <select name="gender" class="form-control">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Others">Others</option>
+            </select><br>
+    
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" name="dob" placeholder="Enter date of birth" required /><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="placeOfBirth" pattern="[A-Za-z]{1,50}" placeholder="Enter place of birth" required /><br>
+
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="placeOfIssue" pattern="[A-Za-z]{1,50}" placeholder="Enter place of issue of passport" required><br>
+
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" name="dateOfIssue" placeholder="Enter date of issue of passport" required/><br>
+            
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" name="dateOfExpiry" required/><br>
+            
+        </div>
+        <div class="form-group">
+            <input type="file" class="form-control" name="faceId" placeholder="Upload photo" accept="image/jpeg, image/png" required/><br>
+            
+        </div>
+        <div class="form-group">
+            <input type="file" class="form-control" name="sign" placeholder="Upload signature" accept="image/jpeg, image/png" required/><br>
+            
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="father" pattern="[A-Za-z]{1,50}" placeholder="Enter father's name" required /><br>
+            
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="mother" pattern="[A-Za-z]{1,50}" placeholder="Enter mother's name" required /><br>
+
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="spouse" pattern="[A-Za-z]{0,50}" placeholder="Enter spouse's name (optional)" /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="address_1" pattern="[\w\.\-\,]{1,50}" placeholder="Address Line 1" required /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="address_2" pattern="[\w\.\-\,]{1,50}" placeholder="Address Line 2" required /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="address_3" pattern="[\w\.\-\,]{1,50}" placeholder="Address Line 3" required /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="address_4" pattern="[\w\.\-\,]{0,50}" placeholder="Address Line 4(optional)" /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="oldPassNum" placeholder="Enter previous passport number(optional)" /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="oldPlaceIssue" pattern="[A-Za-z]{1,50}" placeholder="Enter place of issue of previous passport(optional)" /><br>
+        </div>
+        <div class="form-group">            
+            <input type="date" class="form-control" name="oldDateIssue" pattern="[A-Za-z]{1,50}" placeholder="Enter date of issue of previous passport(optional)" /><br>
+        </div>
+        <div class="form-group">            
+            <input type="text" class="form-control" name="fileNum" placeholder="Enter file number" /><br>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="btn btn-primary" value="Submit">
+        </div>
+    </form>
+</div>
+{% endblock %}
