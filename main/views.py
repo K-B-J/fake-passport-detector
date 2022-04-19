@@ -1,46 +1,70 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import View
-from .models import modUser
 from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse
-from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
 from .deploy import *
+from .models import *
 from .ipfsFiles import *
-
-
-class homepage(View):
-    def get(self, request, *args, **kwargs):
-        return render(request, "home.html")
+from .decorator import *
 
 
 class loginView(View):
     def get(self, request, *args, **kwargs):
-        if "uploader" in request.session:
-            return HttpResponseRedirect(reverse("uploadPage"))
-        if "verifier" in request.session:
-            return HttpResponseRedirect(reverse("verifyPage"))
-        return render(request, "login.html")
+        if request.user.get_username() != "":
+            return redirect("main:home")
+        form = AuthenticationForm()
+        return render(request, "login.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
-        username = request.POST.get("username")
-        password = request.POST.get("password")
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            typeOfUser = modUser.objects.get(user=user)
-            login(request, user)
-            if typeOfUser.typeOfUser:
-                request.session["uploader"] = True
-                return HttpResponseRedirect(reverse("uploadPage"))
+        form = AuthenticationForm(request.POST)
+        username = request.POST["username"]
+        password = request.POST["password"]
+        if User.objects.filter(username=username).exists():
+            user = User.objects.get(username=username)
+            if user.check_password(password):
+                user_authenticated = authenticate(
+                    request, username=username, password=password
+                )
+                login(request, user_authenticated)
+                typeOfUser = modUser.objects.get(user=user)
+                if typeOfUser.typeOfUser:
+                    request.session["uploader"] = True
+                else:
+                    request.session["verifier"] = True
+                return redirect("main:home")
             else:
-                request.session["verifier"] = True
-                return HttpResponseRedirect(reverse("verifyPage"))
+                return render(
+                    request,
+                    "login.html",
+                    {
+                        "form": form,
+                        "my_messages": {"error": "Invalid Credentials."},
+                    },
+                )
+        else:
+            return render(
+                request,
+                "login.html",
+                {"form": form, "my_messages": {"error": "Invalid Credentials."}},
+            )
 
 
-class uploadPage(LoginRequiredMixin, View):
-    login_url = "/login"
+class logoutView(View):
+    @redirector("logout")
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect("main:loginView")
 
+
+class homepage(View):
+    @redirector("home")
+    def get(self, request, *args, **kwargs):
+        return render(request, "home.html")
+
+
+class uploadPage(View):
+    @redirector("upload")
     def get(self, request, *args, **kwargs):
         if "uploader" not in request.session:
             return HttpResponseRedirect(reverse("home"))
@@ -111,9 +135,8 @@ class uploadPage(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse("uploadPage"))
 
 
-class verifyPage(LoginRequiredMixin, View):
-    login_url = "/login"
-
+class verifyPage(View):
+    @redirector("verify")
     def get(self, request, *args, **kwargs):
         return render(request, "verifyPage.html", context={"get_details": False})
 
@@ -177,18 +200,8 @@ class verifyPage(LoginRequiredMixin, View):
         return render(request, "verifyPage.html", context=context)
 
 
-class logoutView(View):
-    def get(self, request, *args, **kwargs):
-        try:
-            logout(request)
-        except:
-            pass
-        return HttpResponseRedirect(reverse("home"))
-
-
-class updatePage(LoginRequiredMixin, View):
-    login_url = "/login"
-
+class updatePage(View):
+    @redirector("update")
     def get(self, request, *args, **kwargs):
         if "uploader" not in request.session:
             return HttpResponseRedirect(reverse("home"))
