@@ -2,6 +2,36 @@
 
 {% load static %}
 
+{% block title %}Home{% endblock %}
+
 {% block body %}
-<h1>Hello</h1>
+<div class="d-flex justify-content-evenly align-items-center" style="min-height: 89vh; flex-wrap: wrap;">
+    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
+        <a class="d-flex" href="{% url 'main:uploadPage' %}"
+            style="text-decoration: none; color: black; padding: 20px;">
+            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
+                <i class="fa fa-upload fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
+                <h5 class="pt-3">Upload Passport</h5>
+            </div>
+        </a>
+    </div>
+    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
+        <a class="d-flex" href="{% url 'main:updatePageInitial' %}"
+            style="text-decoration: none; color: black; padding: 20px;">
+            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
+                <i class="fa fa-refresh fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
+                <h5 class="pt-3">Update Passport</h5>
+            </div>
+        </a>
+    </div>
+    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
+        <a class="d-flex" href="{% url 'main:verifyPage' %}"
+            style="text-decoration: none; color: black; padding: 20px;">
+            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
+                <i class="fa fa-magnifying-glass fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
+                <h5 class="pt-3">Verify Passport</h5>
+            </div>
+        </a>
+    </div>
+</div>
 {% endblock %}

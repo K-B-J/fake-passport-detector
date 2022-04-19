@@ -12,7 +12,7 @@
     <div class="row mb-4">
         <div class="col"></div>
         <div class="col-4 text-center">
-            <form action="{% url 'verifyPage' %}" method="POST">
+            <form action="{% url 'main:verifyPage' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-group">
                     <input type="text" class="form-control" name="passNum" placeholder="Enter passport number"

@@ -14,6 +14,12 @@ class loginView(View):
         if request.user.get_username() != "":
             return redirect("main:home")
         form = AuthenticationForm()
+        if "my_messages" in request.session:
+            my_messages = request.session["my_messages"]
+            del request.session["my_messages"]
+            return render(
+                request, "login.html", {"form": form, "my_messages": my_messages}
+            )
         return render(request, "login.html", {"form": form})
 
     def post(self, request, *args, **kwargs):
@@ -39,14 +45,20 @@ class loginView(View):
                     "login.html",
                     {
                         "form": form,
-                        "my_messages": {"error": "Invalid Credentials."},
+                        "my_messages": {
+                            "error": True,
+                            "message": "Invalid Credentials.",
+                        },
                     },
                 )
         else:
             return render(
                 request,
                 "login.html",
-                {"form": form, "my_messages": {"error": "Invalid Credentials."}},
+                {
+                    "form": form,
+                    "my_messages": {"error": True, "message": "Invalid Credentials."},
+                },
             )
 
 
@@ -54,6 +66,10 @@ class logoutView(View):
     @redirector("logout")
     def get(self, request, *args, **kwargs):
         logout(request)
+        request.session["my_messages"] = {
+            "success": True,
+            "message": "Logged out successfully.",
+        }
         return redirect("main:loginView")
 
 
@@ -133,6 +149,12 @@ class uploadPage(View):
             )
         )
         return HttpResponseRedirect(reverse("uploadPage"))
+
+
+class updatePageInitial(View):
+    @redirector("update")
+    def get(self, request, *args, **kwargs):
+        pass
 
 
 class verifyPage(View):
