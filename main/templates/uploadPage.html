@@ -1,129 +1,154 @@
 {% extends 'layout.html' %}
 
+{% block title %}Upload Passport{% endblock %}
+
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block body %}
-<div class="container">
-    <h1>Upload documents</h1>
-    <form action="{% url 'main:uploadPage' %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <input type="text" class="form-control" name="type" maxlength="1" pattern="[A-Z]{1}"
-                placeholder="Enter type of passport" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required /><br>
+<style>
+    .invalid-feedback {
+        display: block;
+    }
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="holderName" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter First name of passport holder" required /><br>
+    .my_card {
+        width: 98%;
+    }
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="countryCode" pattern="[A-Za-z]{3}"
-                placeholder="Enter country code of passport holder" required /><br>
+    @media only screen and (min-width: 600px) {
+        .my_card {
+            width: 80%;
+        }
+    }
+</style>
+<div class="d-flex justify-content-center m-3 my-5">
+    <div class="card shadow p-4 my_card" style="border-radius: 3mm;">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {{ form.media }}
+            {% csrf_token %}
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="nationality" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter nationality of passport holder" required /><br>
+            <h2 style="text-align: center; margin-bottom: 40px;">UPLOAD PASSPORT DETAILS</h2>
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="surname" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter surname of passport holder" required /><br>
-
-        </div>
-        <div class="form-group">
-            <select name="gender" class="form-control">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Others">Others</option>
-            </select><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dob" placeholder="Enter date of birth" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="placeOfBirth" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter place of birth" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="placeOfIssue" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter place of issue of passport" required><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dateOfIssue" placeholder="Enter date of issue of passport"
-                required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dateOfExpiry" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="file" class="form-control" name="faceId" placeholder="Upload photo"
-                accept="image/jpeg, image/png" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="file" class="form-control" name="sign" placeholder="Upload signature"
-                accept="image/jpeg, image/png" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="father" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter father's name" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="mother" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter mother's name" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="spouse" pattern="[A-Za-z]{0,50}"
-                placeholder="Enter spouse's name (optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_1" pattern="[\w\.\-\,]{1,50}"
-                placeholder="Address Line 1" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_2" pattern="[\w\.\-\,]{1,50}"
-                placeholder="Address Line 2" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_3" pattern="[\w\.\-\,]{1,50}"
-                placeholder="Address Line 3" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_4" pattern="[\w\.\-\,]{0,50}"
-                placeholder="Address Line 4(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="oldPassNum"
-                placeholder="Enter previous passport number(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="oldPlaceIssue" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter place of issue of previous passport(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="oldDateIssue" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter date of issue of previous passport(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="fileNum" placeholder="Enter file number" /><br>
-        </div>
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Submit">
-        </div>
-    </form>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.faceId|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.sign|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.type|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.countryCode|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.passNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.surname|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.holderName|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.gender|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.nationality|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.dob|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.placeOfBirth|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.placeOfIssue|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.dateOfIssue|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.dateOfExpiry|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.father|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.mother|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.spouse|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                {{ form.address_1|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                {{ form.address_2|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                {{ form.address_3|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.oldPassNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.oldPlaceIssue|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.oldDateIssue|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.fileNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-around mt-3">
+                <input type="submit" class="btn btn-success" value="Submit">
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
