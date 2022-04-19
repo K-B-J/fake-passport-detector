@@ -1,3 +1,3 @@
 *__pycache__
 .env
-./main/compiled-sol.json
+main/compiled-sol.json
