@@ -3,6 +3,12 @@ from django.views.generic import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
+import datetime
+from django.conf import settings
+import os
+import io
+import base64
+from PIL import Image
 from .deploy import *
 from .models import *
 from .ipfsFiles import *
@@ -65,6 +71,7 @@ class loginView(View):
 
 class logoutView(View):
     @redirector("logout")
+    @cleanup
     def get(self, request, *args, **kwargs):
         logout(request)
         request.session["my_messages"] = {
@@ -76,6 +83,7 @@ class logoutView(View):
 
 class homepage(View):
     @redirector("home")
+    @cleanup
     def get(self, request, *args, **kwargs):
         if "my_messages" in request.session:
             my_messages = request.session["my_messages"]
@@ -86,10 +94,13 @@ class homepage(View):
 
 class uploadPage(View):
     @redirector("upload")
+    @cleanup
     def get(self, request, *args, **kwargs):
         form = passportDataForm()
         return render(request, "uploadPage.html", {"form": form})
 
+    @redirector("upload")
+    @cleanup
     def post(self, request, *args, **kwargs):
         form = passportDataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -109,13 +120,27 @@ class uploadPage(View):
             sign = request.FILES.get("sign")
             father = form.cleaned_data["father"]
             mother = form.cleaned_data["mother"]
-            spouse = form.cleaned_data["spouse"]
+            spouse = (
+                "" if not form.cleaned_data["spouse"] else form.cleaned_data["spouse"]
+            )
             address_1 = form.cleaned_data["address_1"]
             address_2 = form.cleaned_data["address_2"]
             address_3 = form.cleaned_data["address_3"]
-            oldPassNum = form.cleaned_data["oldPassNum"]
-            oldPlaceIssue = form.cleaned_data["oldPlaceIssue"]
-            oldDateIssue = form.cleaned_data["oldDateIssue"]
+            oldPassNum = (
+                ""
+                if not form.cleaned_data["oldPassNum"]
+                else form.cleaned_data["oldPassNum"]
+            )
+            oldPlaceIssue = (
+                ""
+                if not form.cleaned_data["oldPlaceIssue"]
+                else form.cleaned_data["oldPlaceIssue"]
+            )
+            oldDateIssue = (
+                ""
+                if not form.cleaned_data["oldDateIssue"]
+                else form.cleaned_data["oldDateIssue"]
+            )
             fileNum = form.cleaned_data["fileNum"]
 
             faceIdHash = upload_image(faceId.name, faceId.read())
@@ -180,129 +205,217 @@ class uploadPage(View):
 
 class updatePageInitial(View):
     @redirector("update")
+    @cleanup
     def get(self, request, *args, **kwargs):
-        pass
+        form = passportNumberForm()
+        if "my_messages" in request.session:
+            my_messages = request.session["my_messages"]
+            del request.session["my_messages"]
+            return render(
+                request,
+                "updatePageInitial.html",
+                {"form": form, "my_messages": my_messages},
+            )
+        return render(request, "updatePageInitial.html", {"form": form})
+
+    @redirector("update")
+    @cleanup
+    def post(self, request, *args, **kwargs):
+        form = passportNumberForm(request.POST)
+        if form.is_valid():
+            resp = get_passport_details(form.cleaned_data["passNum"])
+            if not resp["success"]:
+                if resp["data"] == "Passport Hasn't Been Uploaded":
+                    request.session["my_messages"] = {
+                        "warning": True,
+                        "message": "Passport Hasn't Been Uploaded",
+                    }
+                else:
+                    request.session["my_messages"] = {
+                        "error": True,
+                        "message": "Oops, Something went wrong",
+                    }
+                return redirect("main:updatePageInitial")
+            else:
+                request.session["passportData"] = resp["data"]
+                return redirect("main:updatePage")
+        else:
+            return render(request, "updatePageInitial.html", {"form": form})
 
 
 class updatePage(View):
     @redirector("update")
     def get(self, request, *args, **kwargs):
-        if "uploader" not in request.session:
-            return HttpResponseRedirect(reverse("home"))
-        all_details = get_passport_details(self.kwargs["passNum"])
-        if not all_details["success"]:
-            context = {"get_details": False, "error": all_details["data"]}
-        else:
-            details = all_details["data"]
-            passport_num = details[0]
-            personalDetailsArr = [
-                "surname",
-                "name",
-                "nationality",
-                "sex",
-                "dob",
-                "placeOfBirth",
-                "father",
-                "mother",
-                "spouse",
-                "currentAddress",
-            ]
-            passportInformationArr = [
-                "ptype",
-                "countryCode",
-                "placeOfIssue",
-                "dateOfIssue",
-                "dateOfExpiry",
-                "oldPassNumDateAndIssue",
-                "fileNum",
-            ]
-            personal_info = {}
-            passportInfo = {}
-
-            for index, value in enumerate(details[1:11]):
-                personal_info[personalDetailsArr[index]] = value
-            for index, value in enumerate(details[13:]):
-                passportInfo[passportInformationArr[index]] = value
-            personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
-            request.session["images"] = [details[11], details[12]]
-            images = [download_image(details[11]), download_image(details[12])]
-            context = {
-                "get_details": True,
-                "images": images,
-                "passportInfo": passportInfo,
-                "personal_info": personal_info,
-                "passport_num": passport_num,
-            }
-        return render(request, "updatePage.html", context=context)
-
-    def post(self, request, *args, **kwargs):
-        typeOfPass = request.POST.get("type")
-        holderName = request.POST.get("holderName")
-        countryCode = request.POST.get("countryCode")
-        nationality = request.POST.get("nationality")
-        surname = request.POST.get("surname")
-        gender = request.POST.get("gender")
-        dob = request.POST.get("dob")
-        placeOfBirth = request.POST.get("placeOfBirth")
-        placeOfIssue = request.POST.get("placeOfIssue")
-        dateOfIssue = request.POST.get("dateOfIssue")
-        dateOfExpiry = request.POST.get("dateOfExpiry")
-        faceId = request.FILES.get("faceId")
-        sign = request.FILES.get("sign")
-        father = request.POST.get("father")
-        mother = request.POST.get("mother")
-        spouse = request.POST.get("spouse")
-        address_1 = request.POST.get("address_1")
-        address_2 = request.POST.get("address_2")
-        address_3 = request.POST.get("address_3")
-        address_4 = request.POST.get("address_4")
-        oldPassNum = request.POST.get("oldPassNum")
-        oldPlaceIssue = request.POST.get("oldPlaceIssue")
-        oldDateIssue = request.POST.get("oldDateIssue")
-        oldPassNumDateAndIssue = (
-            oldPassNum + ";" + str(oldDateIssue) + ";" + str(oldPlaceIssue)
+        if "passportData" not in request.session:
+            return redirect("main:updatePageInitial")
+        details = request.session["passportData"]
+        address_split = details[10].split(";")
+        oldPassData_split = details[18].split(" ")
+        data = {
+            "surname": details[1],
+            "holderName": details[2],
+            "nationality": details[3],
+            "gender": details[4],
+            "dob": datetime.datetime.strptime(details[5], "%Y-%m-%d"),
+            "placeOfBirth": details[6],
+            "father": details[7],
+            "mother": details[8],
+            "spouse": details[9],
+            "address_1": address_split[0],
+            "address_2": address_split[1],
+            "address_3": address_split[2],
+            "type": details[13],
+            "countryCode": details[14],
+            "placeOfIssue": details[15],
+            "dateOfIssue": datetime.datetime.strptime(details[16], "%Y-%m-%d"),
+            "dateOfExpiry": datetime.datetime.strptime(details[17], "%Y-%m-%d"),
+            "oldPassNum": oldPassData_split[0],
+            "oldPlaceIssue": oldPassData_split[1],
+            "oldDateIssue": datetime.datetime.strptime(oldPassData_split[2], "%Y-%m-%d")
+            if oldPassData_split[2] != ""
+            else "",
+            "fileNum": details[19],
+        }
+        form = passportDataForm(data)
+        form.fields["passNum"].initial = details[0]
+        form.fields["passNum"].disabled = True
+        form.fields["faceId"].required = False
+        form.fields["sign"].required = False
+        images = [download_image(details[11]), download_image(details[12])]
+        username = request.user.get_username()
+        FaceId = Image.open(io.BytesIO(base64.b64decode(images[0])))
+        FaceId.save(
+            os.path.join(settings.BASE_DIR, "media", username + "FaceId.png"), "png"
         )
-        fileNum = request.POST.get("fileNum")
-        imagesInfo = request.session["images"]
-        if not (faceId is None):
-            faceIdHash = upload_image(faceId.name, faceId.read())
-            imagesInfo[0] = faceIdHash
-        if not (sign is None):
-            signIdHash = upload_image(sign.name, sign.read())
-            imagesInfo[1] = signIdHash
-        address = address_1 + ";" + address_2 + ";" + address_3 + ";" + address_4
-        personal_info = [
-            surname,
-            holderName,
-            nationality,
-            gender,
-            str(dob),
-            placeOfBirth,
-            father,
-            mother,
-            spouse,
-            address,
+        FaceId.close()
+        Sign = Image.open(io.BytesIO(base64.b64decode(images[1])))
+        Sign.save(
+            os.path.join(settings.BASE_DIR, "media", username + "Sign.png"), "png"
+        )
+        Sign.close()
+        images_url = [
+            "/media/" + username + "FaceId.png",
+            "/media/" + username + "Sign.png",
         ]
+        return render(request, "updatePage.html", {"form": form, "images": images_url})
 
-        # imagesInfo = [faceIdHash, signIdHash]
-        passportInfo = [
-            typeOfPass,
-            countryCode,
-            placeOfIssue,
-            str(dateOfIssue),
-            str(dateOfExpiry),
-            oldPassNumDateAndIssue,
-            fileNum,
-        ]
-        print(
-            update_passport_details(
-                passnum=self.kwargs["passNum"],
+    @redirector("update")
+    def post(self, request, *args, **kwargs):
+        if "passportData" not in request.session:
+            return redirect("main:updatePageInitial")
+        if request.FILES:
+            form = passportDataForm(request.POST, request.FILES)
+        else:
+            form = passportDataForm(request.POST)
+        form.fields["passNum"].initial = request.session["passportData"][0]
+        form.fields["passNum"].disabled = True
+        form.fields["faceId"].required = False
+        form.fields["sign"].required = False
+        if form.is_valid():
+            typeOfPass = form.cleaned_data["type"]
+            holderName = form.cleaned_data["holderName"]
+            countryCode = form.cleaned_data["countryCode"]
+            nationality = form.cleaned_data["nationality"]
+            surname = form.cleaned_data["surname"]
+            gender = form.cleaned_data["gender"]
+            dob = form.cleaned_data["dob"]
+            placeOfBirth = form.cleaned_data["placeOfBirth"]
+            placeOfIssue = form.cleaned_data["placeOfIssue"]
+            dateOfIssue = form.cleaned_data["dateOfIssue"]
+            dateOfExpiry = form.cleaned_data["dateOfExpiry"]
+            faceId = request.FILES.get("faceId")
+            sign = request.FILES.get("sign")
+            father = form.cleaned_data["father"]
+            mother = form.cleaned_data["mother"]
+            spouse = (
+                "" if not form.cleaned_data["spouse"] else form.cleaned_data["spouse"]
+            )
+            address_1 = form.cleaned_data["address_1"]
+            address_2 = form.cleaned_data["address_2"]
+            address_3 = form.cleaned_data["address_3"]
+            oldPassNum = (
+                ""
+                if not form.cleaned_data["oldPassNum"]
+                else form.cleaned_data["oldPassNum"]
+            )
+            oldPlaceIssue = (
+                ""
+                if not form.cleaned_data["oldPlaceIssue"]
+                else form.cleaned_data["oldPlaceIssue"]
+            )
+            oldDateIssue = (
+                ""
+                if not form.cleaned_data["oldDateIssue"]
+                else form.cleaned_data["oldDateIssue"]
+            )
+            fileNum = form.cleaned_data["fileNum"]
+            if form.cleaned_data["faceId"]:
+                faceIdHash = upload_image(faceId.name, faceId.read())
+            else:
+                faceIdHash = request.session["passportData"][11]
+            if form.cleaned_data["sign"]:
+                signIdHash = upload_image(sign.name, sign.read())
+            else:
+                signIdHash = request.session["passportData"][12]
+            oldPassNumDateAndIssue = (
+                oldPassNum + " " + str(oldDateIssue) + " " + oldPlaceIssue
+            )
+            address = address_1 + ";" + address_2 + ";" + address_3
+
+            personal_info = [
+                surname,
+                holderName,
+                nationality,
+                gender,
+                str(dob),
+                placeOfBirth,
+                father,
+                mother,
+                spouse,
+                address,
+            ]
+            imagesInfo = [faceIdHash, signIdHash]
+            passportInfo = [
+                typeOfPass,
+                countryCode,
+                placeOfIssue,
+                str(dateOfIssue),
+                str(dateOfExpiry),
+                oldPassNumDateAndIssue,
+                fileNum,
+            ]
+
+            resp = update_passport_details(
+                passnum=request.session["passportData"][0],
                 personalInfo=personal_info,
                 imagesInfo=imagesInfo,
                 passportInfo=passportInfo,
             )
-        )
-        return HttpResponseRedirect(reverse("verifyPage"))
+
+            if resp["success"]:
+                request.session["my_messages"] = {
+                    "success": True,
+                    "message": "Passport Updated Successfully",
+                }
+            else:
+                request.session["my_messages"] = {
+                    "error": True,
+                    "message": "Oops, Something went wrong",
+                }
+            del request.session["passportData"]
+            username = request.user.get_username()
+            os.remove(os.path.join(settings.BASE_DIR, "media", username + "FaceId.png"))
+            os.remove(os.path.join(settings.BASE_DIR, "media", username + "Sign.png"))
+            return redirect("main:home")
+        else:
+            username = request.user.get_username()
+            images_url = [
+                "/media/" + username + "FaceId.png",
+                "/media/" + username + "Sign.png",
+            ]
+            return render(
+                request, "updatePage.html", {"form": form, "images": images_url}
+            )
 
 
 class verifyPage(View):
@@ -310,6 +423,7 @@ class verifyPage(View):
     def get(self, request, *args, **kwargs):
         return render(request, "verifyPage.html", context={"get_details": False})
 
+    @redirector("verify")
     def post(self, request, *args, **kwargs):
         passNum = request.POST.get("passNum")
         all_details = get_passport_details(passNum)

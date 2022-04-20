@@ -51,7 +51,9 @@ Passport = w3.eth.contract(abi=abi, bytecode=bytecode)
 
 # getting latest transaction which is also nonce
 nonce = w3.eth.getTransactionCount(my_address)
-print("nonce:", nonce)
+
+# Print statement to get the nonce number when the server is run
+print("\nCurrent Nonce:", nonce)
 
 
 def deployContract(Passport):
@@ -80,12 +82,16 @@ def deployContract(Passport):
 
 if contract_address == "":
     txnReceipt = deployContract(Passport)
-    print(txnReceipt.contractAddress)
     passport = w3.eth.contract(address=txnReceipt.contractAddress, abi=abi)
-    print("Contract Deployed!")
+
+    # Print statemtents to get the contract address when a new contract is deployed
+    print("Contract Address:", txnReceipt.contractAddress)
+    print("Contract Deployed Successfully\n")
 else:
     passport = w3.eth.contract(address=contract_address, abi=abi)
-    print("Contract Fetched!")
+
+    # Print statement for confirming that the contract was fetched successfully
+    print("Contract Fetched Successfully\n")
 
 
 def new_passport(passnum, personal_info, imagesInfo, passportInfo):
@@ -119,8 +125,15 @@ def get_passport_details(passnum):
     w3.eth.contract(abi=abi, bytecode=bytecode)
     try:
         data = passport.functions.getPassportDetails(passnum).call()
-        print("Data obtained!")
-        return {"success": True, "data": data}
+        isNonExistent = True
+        for field in data:
+            if field != "":
+                isNonExistent = False
+                break
+        if isNonExistent:
+            return {"success": False, "data": "Passport Hasn't Been Uploaded"}
+        else:
+            return {"success": True, "data": data}
     except exceptions.SolidityError as err:
         return {"success": False, "data": err}
 

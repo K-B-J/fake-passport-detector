@@ -135,3 +135,11 @@ class passportDataForm(forms.Form):
             raise forms.ValidationError({"oldDateIssue": "Invalid Input"})
 
         return cleaned_data
+
+
+class passportNumberForm(forms.Form):
+    passNum = forms.CharField(
+        max_length=255,
+        label="पासपोर्ट संख्या/Passport No",
+        validators=[RegexValidator("^[a-zA-Z0-9]*$", message="Invalid Input")],
+    )

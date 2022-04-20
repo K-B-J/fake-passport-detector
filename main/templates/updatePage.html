@@ -1,190 +1,228 @@
 {% extends 'layout.html' %}
 
+{% block title %}Update Passport{% endblock %}
+
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block head %}
 <script>
     let inputValues = []
     document.addEventListener("DOMContentLoaded", () => {
-        console.log("HEllo")
-        // await sleep(1000);
         updateForm = document.getElementById("updateForm")
         inputs = updateForm.getElementsByTagName("input")
         options = updateForm.getElementsByTagName('option')
-        sex = document.getElementById("gender").innerHTML
-        for (let [key, element] of Object.entries(options)) {
-            if (element.value == sex) {
-                element.selected = true
-            }
-        }
+        gender = document.querySelector('input[name="gender"]:checked').value
         for (let [key, element] of Object.entries(inputs)) {
             if (element.type == "text" || element.type == "date") {
                 inputValues.push(element.value)
             }
         }
-        inputValues.push(sex)
+        inputValues.push(gender)
     })
     function checkDifference(event) {
         event.preventDefault()
         checkValues = []
         updateForm = document.getElementById("updateForm")
         inputs = updateForm.getElementsByTagName("input")
-        images = []
         for (let [key, element] of Object.entries(inputs)) {
             if (element.type == "text" || element.type == "date") {
                 checkValues.push(element.value)
             }
             if (element.type == "file") {
                 updateForm.submit()
-                return true
             }
         }
-        checkValues.push(document.getElementsByName('gender')[0].value)
+        checkValues.push(document.querySelector('input[name="gender"]:checked').value)
         if (checkValues.length === inputValues.length && checkValues.every(function (value, index) { return value === inputValues[index] })) {
-            alert("No new changes!")
+            var modalButton = document.getElementById("modalButton")
+            modalButton.click()
         } else {
             updateForm.submit()
         }
     }
 </script>
-<link rel="stylesheet" type="text/css" href="{% static 'css/updatePage.css' %}">
 {% endblock %}
 
 {% block body %}
-<div class="container">
-    <h1>Upload documents</h1>
-    <form action="{% url 'updatePage' passport_num %}" method="POST" onsubmit="checkDifference(event);" id="updateForm"
-        enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="form-group">
-            <input type="text" class="form-control" name="type" maxlength="1" pattern="[A-Z]{1}"
-                placeholder="Enter type of passport" value="{{ passportInfo.ptype }}" required /><br>
-        </div>
-        <!--<div class="form-group">
-            <input type="text" class="form-control" name="passNum" placeholder="Enter passport number" required/><br>
+<style>
+    .invalid-feedback {
+        display: block;
+    }
 
-        </div>-->
-        <div class="form-group">
-            <input type="text" class="form-control" name="holderName" value="{{ personal_info.name }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter First name of passport holder" required /><br>
+    .my_card {
+        width: 98%;
+    }
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="countryCode" value="{{ passportInfo.countryCode }}"
-                pattern="[A-Za-z]{3}" placeholder="Enter country code of passport holder" required /><br>
+    @media only screen and (min-width: 600px) {
+        .my_card {
+            width: 80%;
+        }
+    }
+</style>
+<!-- Button trigger modal -->
+<button id="modalButton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    style="display: none;">
+</button>
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div style="border-radius: 2.5mm;">
+            <div class="modal-header alert-warning d-flex align-items-center"
+                style="border-radius: 2.5mm; border:2px solid transparent; border-color: #ffecb5;">
+                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
+                    <use xlink:href="#exclamation-triangle-fill" />
+                </svg>
+                <p class="modal-title" id="exampleModalLabel">No New Changes Made</p>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
         </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="nationality" value="{{ personal_info.nationality }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter nationality of passport holder" required /><br>
+    </div>
+</div>
+<div class="d-flex justify-content-center m-3 my-5">
+    <div class="card shadow p-4 my_card" style="border-radius: 3mm;">
+        <form id="updateForm" action="" method="POST" enctype="multipart/form-data" onsubmit="checkDifference(event)">
+            {{ form.media }}
+            {% csrf_token %}
 
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="surname" value="{{ personal_info.surname }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter surname of passport holder" required /><br>
+            <h2 style="text-align: center; margin-bottom: 40px;">UPDATE PASSPORT DETAILS</h2>
 
-        </div>
-        <p id="gender" style="display: none;">{{ personal_info.sex }}</p>
-        <div class="form-group">
-            <select name="gender" class="form-control">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Others">Others</option>
-            </select><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dob" value="{{ personal_info.dob }}"
-                placeholder="Enter date of birth" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="placeOfBirth" value="{{ personal_info.placeOfBirth }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter place of birth" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="placeOfIssue" value="{{ passportInfo.placeOfIssue }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter place of issue of passport" required><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dateOfIssue" value="{{ passportInfo.dateOfIssue }}"
-                placeholder="Enter date of issue of passport" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="dateOfExpiry" value="{{ passportInfo.dateOfExpiry }}"
-                placeholder="Enter date of expiry of passport" required /><br>
-
-        </div>
-
-
-        <div class="form-group">
-            <input type="text" class="form-control" name="father" value="{{ personal_info.father }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter father's name" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="mother" value="{{ personal_info.mother }}"
-                pattern="[A-Za-z]{1,50}" placeholder="Enter mother's name" required /><br>
-
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="spouse" value="{{ personal_info.spouse }}"
-                pattern="[A-Za-z]{0,50}" placeholder="Enter spouse's name (optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_1" value="{{ personal_info.currentAddress.0 }}"
-                pattern="[A-Za-z0-9'\.\-\s\,]{1,50}" placeholder="Address Line 1" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_2" value="{{ personal_info.currentAddress.1 }}"
-                pattern="[A-Za-z0-9'\.\-\s\,]{1,50}" placeholder="Address Line 2" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_3" value="{{ personal_info.currentAddress.2 }}"
-                pattern="[A-Za-z0-9'\.\-\s\,]{1,50}" placeholder="Address Line 3" required /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="address_4" value="{{ personal_info.currentAddress.3 }}"
-                pattern="[A-Za-z0-9'\.\-\s\,]{0,50}" placeholder="Address Line 4(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="oldPassNum"
-                value="{{ passportInfo.oldPassNumDateAndIssue.0 }}"
-                placeholder="Enter previous passport number(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="oldPlaceIssue"
-                value="{{ passportInfo.oldPassNumDateAndIssue.2 }}" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter place of issue of previous passport(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="date" class="form-control" name="oldDateIssue"
-                value="{{ passportInfo.oldPassNumDateAndIssue.1 }}" pattern="[A-Za-z]{1,50}"
-                placeholder="Enter date of issue of previous passport(optional)" /><br>
-        </div>
-        <div class="form-group">
-            <input type="text" class="form-control" name="fileNum" value="{{ passportInfo.fileNum }}"
-                placeholder="Enter file number" /><br>
-        </div>
-        <div class="form-group">
-            <input type="file" class="form-control" name="faceId" placeholder="Upload photo"
-                accept="image/jpeg, image/png" /><br>
-            <img src="data:image/png;base64,{{ images.0 }}" alt="Ipfs image" id="face-photo" />
-
-        </div>
-        <div class="form-group">
-            <input type="file" class="form-control" name="sign" placeholder="Upload signature"
-                value="data:image/png;base64,{{ images.1 }}" accept="image/jpeg, image/png" /><br>
-            <img src="data:image/png;base64,{{ images.1 }}" alt="Ipfs image" id="sign-photo" />
-
-        </div>
-
-        <div class="form-group">
-            <input type="submit" class="btn btn-primary" value="Submit">
-        </div>
-    </form>
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <div class="col-md-6 d-flex justify-content-center" style="margin: auto;">
+                        <div style="width: 240px;">
+                            <img class="img-thumbnail rounded mx-auto d-block" src="{{ images.0 }}"
+                                alt="Existing FaceId">
+                        </div>
+                    </div>
+                    <div class="col-md-6 d-flex justify-content-center" style="margin: auto;">
+                        <div style="width: 240px;">
+                            <img class="img-thumbnail rounded mx-auto d-block" src="{{ images.1 }}" alt="Existing Sign">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.faceId|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.sign|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.type|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.countryCode|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.passNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.surname|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.holderName|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-4">
+                        {{ form.gender|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.nationality|as_crispy_field }}
+                    </div>
+                    <div class="col-md-4">
+                        {{ form.dob|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.placeOfBirth|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.placeOfIssue|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.dateOfIssue|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.dateOfExpiry|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.father|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.mother|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.spouse|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                {{ form.address_1|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                {{ form.address_2|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                {{ form.address_3|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.oldPassNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.oldPlaceIssue|as_crispy_field }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form.oldDateIssue|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-6">
+                        {{ form.fileNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-around mt-3">
+                <input type="submit" class="btn btn-success" value="Submit">
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
