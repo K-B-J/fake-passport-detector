@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+
+{% block title %}Verify Passport{% endblock %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<style>
+    .invalid-feedback {
+        display: block;
+    }
+
+    .my_card {
+        width: 98%;
+    }
+
+    @media only screen and (min-width: 600px) {
+        .my_card {
+            width: 80%;
+        }
+    }
+</style>
+<div class="d-flex justify-content-center m-3 my-5">
+    <div class="card shadow p-4 my_card" style="border-radius: 3mm;">
+        <form action="" method="POST">
+            {{ form.media }}
+            {% csrf_token %}
+
+            <h2 style="text-align: center; margin-bottom: 40px;">VERIFY PASSPORT DETAILS</h2>
+
+            <div class="col-md-12">
+                <div class="row justify-content-center">
+                    <div class="col-md-4">
+                        {{ form.passNum|as_crispy_field }}
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-around mt-3">
+                <input type="submit" class="btn btn-success" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

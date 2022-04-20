@@ -386,67 +386,86 @@ class updatePage(View):
             return render(request, "updatePage.html", {"form": form, "images": images})
 
 
-class verifyPage(View):
+class verifyPageInitial(View):
     @redirector("verify")
     def get(self, request, *args, **kwargs):
-        return render(request, "verifyPage.html", context={"get_details": False})
+        form = passportNumberForm()
+        if "my_messages" in request.session:
+            my_messages = request.session["my_messages"]
+            del request.session["my_messages"]
+            return render(
+                request,
+                "verifyPageInitial.html",
+                {"form": form, "my_messages": my_messages},
+            )
+        return render(request, "verifyPageInitial.html", {"form": form})
 
     @redirector("verify")
     def post(self, request, *args, **kwargs):
-        passNum = request.POST.get("passNum")
-        all_details = get_passport_details(passNum)
-        if "uploader" in request.session:
-            update_access = True
+        form = passportNumberForm(request.POST)
+        if form.is_valid():
+            resp = get_passport_details(form.cleaned_data["passNum"])
+            if not resp["success"]:
+                if resp["data"] == "Passport Hasn't Been Uploaded":
+                    request.session["my_messages"] = {
+                        "error": True,
+                        "message": "Invalid Passport Number",
+                    }
+                else:
+                    request.session["my_messages"] = {
+                        "error": True,
+                        "message": "Oops, Something went wrong",
+                    }
+                return redirect("main:verifyPageInitial")
+            else:
+                request.session["passportData"] = resp["data"]
+                return redirect("main:verifyPage")
         else:
-            update_access = False
-        if not all_details["success"]:
-            context = {
-                "get_details": False,
-                "update_access": False,
-                "error": all_details["data"],
-            }
-        else:
-            details = all_details["data"]
-            passport_num = details[0]
-            personalDetailsArr = [
-                "surname",
-                "name",
-                "nationality",
-                "sex",
-                "dob",
-                "placeOfBirth",
-                "father",
-                "mother",
-                "spouse",
-                "currentAddress",
-            ]
-            passportInformationArr = [
-                "ptype",
-                "countryCode",
-                "placeOfIssue",
-                "dateOfIssue",
-                "dateOfExpiry",
-                "oldPassNumDateAndIssue",
-                "fileNum",
-            ]
-            personal_info = {}
-            passportInfo = {}
+            return render(request, "verifyPageInitial.html", {"form": form})
 
-            for index, value in enumerate(details[1:11]):
-                personal_info[personalDetailsArr[index]] = value
-            for index, value in enumerate(details[13:]):
-                passportInfo[passportInformationArr[index]] = value
-            personal_info["currentAddress"] = personal_info["currentAddress"].split(";")
-            passportInfo["oldPassNumDateAndIssue"] = passportInfo[
-                "oldPassNumDateAndIssue"
-            ].split(";")
-            images = [download_image(details[11]), download_image(details[12])]
-            context = {
-                "get_details": True,
-                "images": images,
-                "passportInfo": passportInfo,
-                "personal_info": personal_info,
-                "passport_num": passport_num,
-                "update_access": update_access,
-            }
-        return render(request, "verifyPage.html", context=context)
+
+class verifyPage(View):
+    @redirector("verify")
+    def get(self, request, *args, **kwargs):
+        if "passportData" not in request.session:
+            return redirect("main:verifyPageInitial")
+        details = request.session["passportData"]
+        address_split = details[10].split(";")
+        oldPassData_split = details[18].split(" ")
+        data = {
+            "passNum": details[0],
+            "surname": details[1],
+            "holderName": details[2],
+            "nationality": details[3],
+            "gender": details[4],
+            "dob": datetime.datetime.strptime(details[5], "%Y-%m-%d"),
+            "placeOfBirth": details[6],
+            "father": details[7],
+            "mother": details[8],
+            "spouse": details[9],
+            "address_1": address_split[0],
+            "address_2": address_split[1],
+            "address_3": address_split[2],
+            "type": details[13],
+            "countryCode": details[14],
+            "placeOfIssue": details[15],
+            "dateOfIssue": datetime.datetime.strptime(details[16], "%Y-%m-%d"),
+            "dateOfExpiry": datetime.datetime.strptime(details[17], "%Y-%m-%d"),
+            "oldPassNum": oldPassData_split[0],
+            "oldPlaceIssue": oldPassData_split[1],
+            "oldDateIssue": datetime.datetime.strptime(oldPassData_split[2], "%Y-%m-%d")
+            if oldPassData_split[2] != ""
+            else "",
+            "fileNum": details[19],
+        }
+        form = passportDataForm()
+        for field in form.fields.keys():
+            if field in [
+                "faceId",
+                "sign",
+            ]:
+                continue
+            form.fields[field].initial = data[field]
+            form.fields[field].disabled = True
+        images = [download_image(details[11]), download_image(details[12])]
+        return render(request, "verifyPage.html", {"form": form, "images": images})

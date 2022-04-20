@@ -8,7 +8,8 @@ urlpatterns = [
     path("upload", uploadPage.as_view(), name="uploadPage"),
     path("update", updatePageInitial.as_view(), name="updatePageInitial"),
     path("update/edit", updatePage.as_view(), name="updatePage"),
-    path("verify", verifyPage.as_view(), name="verifyPage"),
+    path("verify", verifyPageInitial.as_view(), name="verifyPageInitial"),
+    path("verify/data", verifyPage.as_view(), name="verifyPage"),
     path("login", loginView.as_view(), name="loginView"),
     path("logout", logoutView.as_view(), name="logoutView"),
 ]

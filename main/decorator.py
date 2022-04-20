@@ -1,6 +1,4 @@
 from django.shortcuts import redirect
-import os
-from django.conf import settings
 
 
 def redirector(page):
@@ -11,7 +9,7 @@ def redirector(page):
             elif page in ["upload", "update"] and "verifier" in request.session:
                 return redirect("main:home")
             elif page == "home" and "verifier" in request.session:
-                return redirect("main:verifyPage")
+                return redirect("main:verifyPageInitial")
             else:
                 return func(self, request, *args, **kwargs)
 
