@@ -39,17 +39,20 @@
         <div class="modal-dialog">
             <div style="border-radius: 2.5mm;">
                 {% if my_messages.success %}
-                <div class="modal-header alert-success d-flex align-items-center" style="border-radius: 2.5mm;">
+                <div class="modal-header alert-success d-flex align-items-center"
+                    style="border-radius: 2.5mm; border:2px solid transparent; border-color: #badbcc;">
                     <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:">
                         <use xlink:href="#check-circle-fill" />
                     </svg>
                     {% elif my_messages.warning %}
-                    <div class="modal-header alert-warning d-flex align-items-center" style="border-radius: 2.5mm;">
+                    <div class="modal-header alert-warning d-flex align-items-center"
+                        style="border-radius: 2.5mm; border:2px solid transparent; border-color: #ffecb5;">
                         <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:">
                             <use xlink:href="#exclamation-triangle-fill" />
                         </svg>
                         {% elif my_messages.error %}
-                        <div class="modal-header alert-danger d-flex align-items-center" style="border-radius: 2.5mm;">
+                        <div class="modal-header alert-danger d-flex align-items-center"
+                            style="border-radius: 2.5mm; border:2px solid transparent; border-color: #f5c2c7;">
                             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:">
                                 <use xlink:href="#exclamation-triangle-fill" />
                             </svg>
