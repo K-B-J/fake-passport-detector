@@ -4,11 +4,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 import datetime
-from django.conf import settings
-import os
-import io
-import base64
-from PIL import Image
 from .deploy import *
 from .models import *
 from .ipfsFiles import *
@@ -71,7 +66,6 @@ class loginView(View):
 
 class logoutView(View):
     @redirector("logout")
-    @cleanup
     def get(self, request, *args, **kwargs):
         logout(request)
         request.session["my_messages"] = {
@@ -83,7 +77,6 @@ class logoutView(View):
 
 class homepage(View):
     @redirector("home")
-    @cleanup
     def get(self, request, *args, **kwargs):
         if "my_messages" in request.session:
             my_messages = request.session["my_messages"]
@@ -94,13 +87,11 @@ class homepage(View):
 
 class uploadPage(View):
     @redirector("upload")
-    @cleanup
     def get(self, request, *args, **kwargs):
         form = passportDataForm()
         return render(request, "uploadPage.html", {"form": form})
 
     @redirector("upload")
-    @cleanup
     def post(self, request, *args, **kwargs):
         form = passportDataForm(request.POST, request.FILES)
         if form.is_valid():
@@ -205,7 +196,6 @@ class uploadPage(View):
 
 class updatePageInitial(View):
     @redirector("update")
-    @cleanup
     def get(self, request, *args, **kwargs):
         form = passportNumberForm()
         if "my_messages" in request.session:
@@ -219,7 +209,6 @@ class updatePageInitial(View):
         return render(request, "updatePageInitial.html", {"form": form})
 
     @redirector("update")
-    @cleanup
     def post(self, request, *args, **kwargs):
         form = passportNumberForm(request.POST)
         if form.is_valid():
@@ -282,22 +271,7 @@ class updatePage(View):
         form.fields["faceId"].required = False
         form.fields["sign"].required = False
         images = [download_image(details[11]), download_image(details[12])]
-        username = request.user.get_username()
-        FaceId = Image.open(io.BytesIO(base64.b64decode(images[0])))
-        FaceId.save(
-            os.path.join(settings.BASE_DIR, "media", username + "FaceId.png"), "png"
-        )
-        FaceId.close()
-        Sign = Image.open(io.BytesIO(base64.b64decode(images[1])))
-        Sign.save(
-            os.path.join(settings.BASE_DIR, "media", username + "Sign.png"), "png"
-        )
-        Sign.close()
-        images_url = [
-            "/media/" + username + "FaceId.png",
-            "/media/" + username + "Sign.png",
-        ]
-        return render(request, "updatePage.html", {"form": form, "images": images_url})
+        return render(request, "updatePage.html", {"form": form, "images": images})
 
     @redirector("update")
     def post(self, request, *args, **kwargs):
@@ -311,6 +285,10 @@ class updatePage(View):
         form.fields["passNum"].disabled = True
         form.fields["faceId"].required = False
         form.fields["sign"].required = False
+        images = [
+            download_image(request.session["passportData"][11]),
+            download_image(request.session["passportData"][12]),
+        ]
         if form.is_valid():
             typeOfPass = form.cleaned_data["type"]
             holderName = form.cleaned_data["holderName"]
@@ -403,19 +381,9 @@ class updatePage(View):
                     "message": "Oops, Something went wrong",
                 }
             del request.session["passportData"]
-            username = request.user.get_username()
-            os.remove(os.path.join(settings.BASE_DIR, "media", username + "FaceId.png"))
-            os.remove(os.path.join(settings.BASE_DIR, "media", username + "Sign.png"))
             return redirect("main:home")
         else:
-            username = request.user.get_username()
-            images_url = [
-                "/media/" + username + "FaceId.png",
-                "/media/" + username + "Sign.png",
-            ]
-            return render(
-                request, "updatePage.html", {"form": form, "images": images_url}
-            )
+            return render(request, "updatePage.html", {"form": form, "images": images})
 
 
 class verifyPage(View):
