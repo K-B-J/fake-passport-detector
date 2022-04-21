@@ -1,4 +1,6 @@
 from django.contrib import admin
-from .models import modUser
+from .models import *
 
-admin.site.register(modUser)
+admin.site.register(Issuer)
+admin.site.register(Verifier)
+admin.site.register(Security)

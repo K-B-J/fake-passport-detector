@@ -6,9 +6,9 @@ def redirector(page):
         def logic(self, request, *args, **kwargs):
             if request.user.get_username() == "":
                 return redirect("main:loginView")
-            elif page in ["upload", "update"] and "verifier" in request.session:
-                return redirect("main:home")
-            elif page == "home" and "verifier" in request.session:
+            elif page in ["upload", "update", "home"] and (
+                "issuer" not in request.session and not request.user.is_superuser
+            ):
                 return redirect("main:verifyPageInitial")
             else:
                 return func(self, request, *args, **kwargs)

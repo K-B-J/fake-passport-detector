@@ -31,15 +31,26 @@ class loginView(View):
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.check_password(password):
+                if Issuer.objects.exists(user=user):
+                    request.session["issuer"] = True
+                elif Verifier.objects.exists(user=user):
+                    request.session["verifier"] = True
+                else:
+                    return render(
+                        request,
+                        "login.html",
+                        {
+                            "form": form,
+                            "my_messages": {
+                                "error": True,
+                                "message": "Sorry Security Doesn't Have Access To The Portal Yet",
+                            },
+                        },
+                    )
                 user_authenticated = authenticate(
                     request, username=username, password=password
                 )
                 login(request, user_authenticated)
-                typeOfUser = modUser.objects.get(user=user)
-                if typeOfUser.typeOfUser:
-                    request.session["uploader"] = True
-                else:
-                    request.session["verifier"] = True
                 return redirect("main:home")
             else:
                 return render(
