@@ -65,21 +65,66 @@
             </div>
             {% endif %}
 
-            <nav class="navbar bg-dark d-flex" style="flex-direction: row;">
-                <div style="flex: 1; margin-left: 18px;">
-                    <a href="{% url 'main:home' %}" style="text-decoration: none; color: white; font-size: 22px;">
-                        FPD
-                    </a>
-                </div>
-                <div class="dropdown">
-                    <a class="dropdown-toggle" href="#" id="dropdownMenuLink" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false" style="color: white; margin-right: 18px; text-decoration: none;">
-                        {{ request.user }}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="{% url 'main:logoutView' %}"
-                                style="text-decoration: none; color: black;">Logout</a></li>
-                    </ul>
+            <nav class="navbar navbar-dark navbar-expand-lg bg-dark">
+                <div class="container-fluid">
+                    <a class="navbar-brand" href="{% url 'main:home' %}">Fake Passport Detector</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="offcanvas offcanvas-end bg-dark" tabindex="-1" id="offcanvasNavbar"
+                        aria-labelledby="offcanvasNavbarLabel">
+                        <div class="offcanvas-header">
+                            <a class="offcanvas-title" id="offcanvasNavbarLabel" href="{% url 'main:home' %}"
+                                style="text-decoration: none; color: white;">
+                                <h5>Fake Passport Detector</h5>
+                            </a>
+                            <button type=" button" class="btn-close btn-close-white text-reset"
+                                data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                {% if request.session.issuer %}
+                                <li class="nav-item" style="padding-right: 14px;">
+                                    <a class="nav-link" href="{% url 'main:uploadPage' %}">
+                                        <i class="fa fa-upload" aria-hidden="true" style="padding-right: 6px;"></i>
+                                        Upload Passport
+                                    </a>
+                                </li>
+                                <li class="nav-item" style="padding-right: 14px;">
+                                    <a class="nav-link" href="{% url 'main:updatePageInitial' %}">
+                                        <i class="fa fa-refresh" aria-hidden="true" style="padding-right: 6px;"></i>
+                                        Update Passport
+                                    </a>
+                                </li>
+                                {% elif request.session.verifier %}
+                                <li class="nav-item" style="padding-right: 14px;">
+                                    <a class="nav-link" href="{% url 'main:reportFakePassport' %}">
+                                        <i class="fa fa-exclamation-triangle" aria-hidden="true"
+                                            style="padding-right: 6px;"></i>
+                                        Report Fake Passport
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li class="nav-item dropdown" style="padding-right: 14px;">
+                                    <a class="nav-link dropdown-toggle" href="#" id="offcanvasNavbarDropdown"
+                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user" aria-hidden="true" style="padding-right: 6px;"></i>
+                                        {{ request.user }}
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark"
+                                        aria-labelledby="offcanvasNavbarDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="{% url 'main:logoutView' %}">
+                                                <i class="fa fa-key" aria-hidden="true" style="padding-right: 6px;"></i>
+                                                Logout
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </nav>
 

@@ -93,6 +93,13 @@ class homepage(View):
             my_messages = request.session["my_messages"]
             del request.session["my_messages"]
             return render(request, "home.html", {"my_messages": my_messages})
+
+        # Sample syntax for retreving and accessing all the data for charts
+        # You can refer to models.py to know the exact structure
+        # data = FakePassportReport.objects.all()
+        # print(data[0].verifier.user.username)
+        # print(data[0].time)
+
         return render(request, "home.html")
 
 
@@ -480,3 +487,41 @@ class verifyPage(View):
             form.fields[field].disabled = True
         images = [download_image(details[11]), download_image(details[12])]
         return render(request, "verifyPage.html", {"form": form, "images": images})
+
+
+class reportFakePassport(View):
+    @redirector("report")
+    def get(self, request, *args, **kwargs):
+        form = reportFakePassportForm()
+        fields = [
+            "Face Image",
+            "Signature",
+            "Type",
+            "Country Code",
+            "Passport No",
+            "Surname",
+            "Given Name",
+            "Nationality",
+            "Date of Birth",
+            "Place of Birth",
+            "Place of issue",
+            "Date of issue",
+            "Date of expiry",
+            "Name of Father/Legal Guardian",
+            "Name of Mother",
+            "Name of Spouse",
+            "Old Passport Number",
+            "Old Passport Place of Issue",
+            "Old Passport Date of Issue",
+            "File number",
+            "Address Line 1",
+            "Address Line 2",
+            "Address Line 3",
+        ]
+        return render(
+            request, "reportFakePassport.html", {"form": form, "fields": fields}
+        )
+
+    @redirector("report")
+    def post(self, request, *args, **kwargs):
+        pass

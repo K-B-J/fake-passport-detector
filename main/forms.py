@@ -1,8 +1,9 @@
 from django import forms
-from django.core.validators import FileExtensionValidator, RegexValidator
+from django.core.validators import RegexValidator
 from django.conf import settings
 from bootstrap_datepicker_plus.widgets import DatePickerInput
 from .helper_functions import *
+from .models import *
 
 
 class passportDataForm(forms.Form):
@@ -143,3 +144,16 @@ class passportNumberForm(forms.Form):
         label="पासपोर्ट संख्या/Passport No",
         validators=[RegexValidator("^[a-zA-Z0-9]*$", message="Invalid Input")],
     )
+
+
+class reportFakePassportForm(forms.ModelForm):
+    passNum = forms.CharField(max_length=255, label="पासपोर्ट संख्या/Passport No")
+    image = forms.ImageField(
+        label="नकली पासपोर्ट छवि/Fake Passport Image",
+        help_text="नकली पासपोर्ट की एक छवि पर क्लिक करें और इसे अपलोड करें/Click an image of the fake passport and upload it",
+    )
+
+    class Meta:
+        model = FakePassportReport
+        fields = ["passNum", "image", "remarks"]
+        labels = {"remarks": "टिप्पणियों/Remarks"}

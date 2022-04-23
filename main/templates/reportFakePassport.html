@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+
+{% block title %}Report Fake Passport{% endblock %}
+
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block body %}
+<style>
+    .invalid-feedback {
+        display: block;
+    }
+
+    .my_card {
+        width: 98%;
+    }
+
+    @media only screen and (min-width: 600px) {
+        .my_card {
+            width: 80%;
+        }
+    }
+</style>
+<div class="d-flex justify-content-center m-3 my-5">
+    <div class="card shadow p-4 my_card" style="border-radius: 3mm;">
+        <form action="" method="POST" enctype="multipart/form-data">
+            {{ form.media }}
+            {% csrf_token %}
+
+            <h2 style="text-align: center; margin-bottom: 40px;">REPORT FAKE PASSPORT DETAILS</h2>
+
+            <div class="col-md-12">
+                {{ form.passNum|as_crispy_field }}
+            </div>
+            <div class="col-md-12">
+                {{ form.image|as_crispy_field }}
+            </div>
+            <div class="col-md-12 mb-3">
+                <div class="row">
+                    <label class="mb-1">गलत क्षेत्र/Incorrect Fields*</label>
+                    {% for field in fields %}
+                    <div class="col-md-4">
+                        <input type="checkbox" name="fakeFields" id="fakeFields{{ forloop.counter }}"
+                            value="{{ field }}">
+                        <label for="fakeFields{{ forloop.counter }}">{{ field }}</label>
+                    </div>
+                    {% endfor %}
+                    <small id="hint_id_fields" class="form-text text-muted">नकली पासपोर्ट में सभी गलत क्षेत्रों का चयन
+                        करें/Select all the incorrect fields in the fake passport</small>
+                </div>
+            </div>
+            <div class="col-md-12">
+                {{ form.remarks|as_crispy_field }}
+            </div>
+            <div class="d-flex justify-content-around mt-3">
+                <input type="submit" class="btn btn-success" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

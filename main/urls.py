@@ -10,6 +10,7 @@ urlpatterns = [
     path("update/edit", updatePage.as_view(), name="updatePage"),
     path("verify", verifyPageInitial.as_view(), name="verifyPageInitial"),
     path("verify/data", verifyPage.as_view(), name="verifyPage"),
+    path("reportFakePassport", reportFakePassport.as_view(), name="reportFakePassport"),
     path("login", loginView.as_view(), name="loginView"),
     path("logout", logoutView.as_view(), name="logoutView"),
 ]
