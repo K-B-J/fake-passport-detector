@@ -1,5 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
+import os
+
+
+def rename(instance, filename):
+    base, ext = os.path.splitext(filename)
+    upload_to = "fake_passport_reports"
+    filename = instance.verifier.user.username + "_" + str(instance.time) + ext
+    return os.path.join(upload_to, filename)
 
 
 class Airports(models.Model):
@@ -28,6 +36,6 @@ class FakePassportReport(models.Model):
     airport = models.ForeignKey(Airports, on_delete=models.DO_NOTHING)
     time = models.CharField(max_length=255)
     passNum = models.CharField(max_length=255)
-    image = models.URLField(max_length=255)
+    image = models.ImageField(upload_to=rename)
     options = models.CharField(max_length=255)
     remarks = models.TextField()

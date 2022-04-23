@@ -31,9 +31,9 @@ class loginView(View):
         if User.objects.filter(username=username).exists():
             user = User.objects.get(username=username)
             if user.check_password(password):
-                if Issuer.objects.exists(user=user):
+                if Issuer.objects.filter(user=user).exists():
                     request.session["issuer"] = True
-                elif Verifier.objects.exists(user=user):
+                elif Verifier.objects.filter(user=user).exists():
                     request.session["verifier"] = True
                 else:
                     return render(
