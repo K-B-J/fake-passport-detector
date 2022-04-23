@@ -4,34 +4,239 @@
 
 {% block title %}Home{% endblock %}
 
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
+<link href="{% static 'css\nucleo-icons.css' %}" rel="stylesheet">
+<link href="{% static 'css\nucleo-svg.css' %}" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/series-label.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+{% endblock %}
+
 {% block body %}
-<div class="d-flex justify-content-evenly align-items-center" style="min-height: 89vh; flex-wrap: wrap;">
-    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
-        <a class="d-flex" href="{% url 'main:uploadPage' %}"
-            style="text-decoration: none; color: black; padding: 20px;">
-            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
-                <i class="fa fa-upload fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
-                <h5 class="pt-3">Upload Passport</h5>
+<div class="bg-gray-200" style="height:100%">
+    &nbsp;
+    <div class="row my-4 mx-3">
+        <div>
+            <div class="card z-index-2 ">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                    <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                        <div class="chart px-1">
+                            <div class="chart-canvas" id="loc-cases" style="height: 300px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-0 ">Passport Location History</h6>
+                    <hr class="dark horizontal">
+                    <div class="d-flex ">
+                        <i class="material-icons text-sm my-auto me-1">schedule</i>
+                        <p class="mb-0 text-sm"> Last attempt at {{ last_airport }} </p>
+                    </div>
+                </div>
             </div>
-        </a>
+        </div>
     </div>
-    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
-        <a class="d-flex" href="{% url 'main:updatePageInitial' %}"
-            style="text-decoration: none; color: black; padding: 20px;">
-            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
-                <i class="fa fa-refresh fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
-                <h5 class="pt-3">Update Passport</h5>
+
+    &nbsp;
+
+    <div class="row my-4 mx-3">
+        <div>
+            <div class="card z-index-2 ">
+                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                    <div class="bg-gradient-info shadow-info border-radius-lg py-3 pe-1">
+                        <div class="chart px-1">
+                            <div class="chart-canvas" id="time-cases" style="height: 300px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <h6 class="mb-0 ">Cases Time History</h6>
+                    <hr class="dark horizontal">
+                    <div class="d-flex ">
+                        <i class="material-icons text-sm my-auto me-1">schedule</i>
+                        <p class="mb-0 text-sm"> Last attempt on {{ last_time }}</p>
+
+                    </div>
+                </div>
             </div>
-        </a>
-    </div>
-    <div class="card shadow" style="width: 14rem; height: 14rem; border-radius: 3mm">
-        <a class="d-flex" href="{% url 'main:verifyPage' %}"
-            style="text-decoration: none; color: black; padding: 20px;">
-            <div class="d-flex align-items-center justify-content-center flex-column" style="margin: auto;">
-                <i class="fa fa-magnifying-glass fa-6x justify-content-center pb-4 pt-2" aria-hidden="true"></i>
-                <h5 class="pt-3">Verify Passport</h5>
-            </div>
-        </a>
+        </div>
     </div>
 </div>
+
+
+
+
+<script>
+    _years = {{ years | safe }}
+    series_data = {{ series_data_1 | safe }}
+    console.log(_years, series_data)
+
+    cases_series = {{ series_data_2 | safe }}
+    cases_arr = []
+    for (i in cases_series) {
+        new_date = cases_series[i][0] * 1000
+        cases_arr.push([new_date, cases_series[i][1]])
+    }
+    series_opt = [{
+        name: "Cases",
+        data: cases_arr
+    }]
+    console.log(series_opt)
+
+    Highcharts.chart('loc-cases', {
+        chart: {
+            type: 'column',
+            scrollablePlotArea: {
+                minWidth: 800,
+                scrollPositionX: 1
+            },
+            backgroundColor: "rgba(225,255,255,0)",
+        },
+        title: {
+            text: 'Number of Cases in Airports per Year',
+            style: {
+                color: "#fff"
+            }
+        },
+        xAxis: {
+            categories: _years,
+            crosshair: true,
+            title: {
+                text: 'Years',
+                style: {
+                    color: '#fff',
+                }
+            },
+            labels: {
+                style: {
+                    color: '#fff',
+                }
+            },
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Cases',
+                style: {
+                    color: '#fff',
+                }
+            },
+            labels: {
+                style: {
+                    color: '#fff',
+                }
+            },
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px;">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:black;padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} cases</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: series_data,
+        responsive: {
+            rules: [{
+                chartOptions: {
+                    legend: {
+                        enabled: false
+                    }
+                },
+                condition: {
+                    maxWidth: 800
+                }
+            }]
+        }
+    });
+
+
+    Highcharts.chart('time-cases', {
+        chart: {
+            type: 'spline',
+            scrollablePlotArea: {
+                minWidth: 800,
+                scrollPositionX: 1
+            },
+            backgroundColor: "rgba(225,255,255,0)",
+        },
+        title: {
+            text: 'Cases per day',
+            style: {
+                color: "#fff"
+            }
+        },
+        xAxis: {
+            type: 'datetime',
+            title: {
+                text: 'Date',
+                style: {
+                    color: '#fff',
+                }
+            },
+            labels: {
+                style: {
+                    color: '#fff',
+                }
+            },
+        },
+        yAxis: {
+            title: {
+                text: 'Cases',
+                style: {
+                    color: '#fff',
+                }
+            },
+            labels: {
+                style: {
+                    color: '#fff',
+                }
+            },
+            min: 0
+        },
+        tooltip: {
+            headerFormat: '<b>{series.name}</b><br>',
+            pointFormat: '{point.x:%e,%b,%y}: {point.y:.0f} cases',
+            shared: true,
+            useHTML: true
+        },
+        colors: ["#fff"],
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: true
+                }
+            }
+        },
+        series: series_opt,
+        responsive: {
+            rules: [{
+                chartOptions: {
+                    legend: {
+                        enabled: false
+                    }
+                },
+                condition: {
+                    maxWidth: 800
+                }
+            }]
+        }
+    })
+
+</script>
+
 {% endblock %}

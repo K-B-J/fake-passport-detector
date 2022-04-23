@@ -9,6 +9,7 @@ from .models import *
 from .ipfsFiles import *
 from .decorator import *
 from .forms import *
+from .home_dashboard_functions import *
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
@@ -99,11 +100,25 @@ class homepage(View):
 
         # Sample syntax for retreving and accessing all the data for charts
         # You can refer to models.py to know the exact structure
-        # data = FakePassportReport.objects.all()
+        data = FakePassportReport.objects.all()
+        years, series_data_1, series_data_2, last_airport, last_time = dashboard_data(
+            data
+        )
+
+        # series_data_2, last_airport, last_time = year_cases(data)
+
         # print(data[0].verifier.user.username)
         # print(data[0].time)
 
-        return render(request, "home.html")
+        context = {
+            "data": data,
+            "years": years,
+            "series_data_1": series_data_1,
+            "series_data_2": series_data_2,
+            "last_airport": last_airport,
+            "last_time": last_time,
+        }
+        return render(request, "home.html", context)
 
 
 class uploadPage(View):
