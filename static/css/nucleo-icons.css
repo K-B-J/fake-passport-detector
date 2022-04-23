@@ -1,13 +1,7 @@
-/*--------------------------------
-
-hermes-dashboard-icons Web Font - built using nucleoapp.com
-License - nucleoapp.com/license/
-
--------------------------------- */
 @font-face {
   font-family: 'NucleoIcons';
-  src: url('../fonts/nucleo-icons.eot');
-  src: url('../fonts/nucleo-icons.eot') format('embedded-opentype'), url('../fonts/nucleo-icons.woff2') format('woff2'), url('../fonts/nucleo-icons.woff') format('woff'), url('../fonts/nucleo-icons.ttf') format('truetype'), url('../fonts/nucleo-icons.svg') format('svg');
+  src: url('fake-passport-detector/static/fonts/nucleo-icons.eot');
+  src: url('fake-passport-detector/static/fonts/nucleo-icons.eot') format('embedded-opentype'), url('fake-passport-detector/static/fonts/nucleo-icons.woff2') format('woff2'), url('fake-passport-detector/static/fonts/nucleo-icons.woff') format('woff'), url('fake-passport-detector/static/fonts/nucleo-icons.ttf') format('truetype'), url('fake-passport-detector/static/fonts/nucleo-icons.svg') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -592,6 +586,3 @@ License - nucleoapp.com/license/
 .ni-ui-04::before {
   content: "\ea65";
 }
-
-
-/* all icon font classes list here */
