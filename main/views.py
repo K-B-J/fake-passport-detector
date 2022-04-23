@@ -9,6 +9,9 @@ from .models import *
 from .ipfsFiles import *
 from .decorator import *
 from .forms import *
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
+from django.template.loader import get_template
 
 
 class loginView(View):
@@ -489,6 +492,23 @@ class verifyPage(View):
         return render(request, "verifyPage.html", {"form": form, "images": images})
 
 
+def emailer(security, verifier, security_email, time):
+    message = get_template("emailTemplate.html",).render(
+        {
+            "security": security,
+            "verifier": verifier,
+        }
+    )
+    msg = EmailMessage(
+        "Fake Passport Detected, Report Time: " + time,
+        message,
+        settings.FROM_EMAIL_ID,
+        [str(security_email)],
+    )
+    msg.content_subtype = "html"
+    msg.send(fail_silently=True)
+
+
 class reportFakePassport(View):
     @redirector("report")
     def get(self, request, *args, **kwargs):
@@ -524,4 +544,63 @@ class reportFakePassport(View):
 
     @redirector("report")
     def post(self, request, *args, **kwargs):
-        pass
+        form = reportFakePassportForm(request.POST, request.FILES)
+        fields = [
+            "Face Image",
+            "Signature",
+            "Type",
+            "Country Code",
+            "Passport No",
+            "Surname",
+            "Given Name",
+            "Nationality",
+            "Date of Birth",
+            "Place of Birth",
+            "Place of issue",
+            "Date of issue",
+            "Date of expiry",
+            "Name of Father/Legal Guardian",
+            "Name of Mother",
+            "Name of Spouse",
+            "Old Passport Number",
+            "Old Passport Place of Issue",
+            "Old Passport Date of Issue",
+            "File number",
+            "Address Line 1",
+            "Address Line 2",
+            "Address Line 3",
+        ]
+        selected_fields = []
+        for field in fields:
+            if field in request.POST:
+                selected_fields.append(field)
+        if not selected_fields:
+            return render(
+                request,
+                "reportFakePassport.html",
+                {"form": form, "fields": fields, "fields_error": True},
+            )
+        if form.is_valid():
+            report = form.save(commit=False)
+            report.verifier = Verifier.objects.filter(user=request.user)[0]
+            report.airport = report.verifier.airport
+            report.time = str(int(datetime.datetime.now().timestamp()))
+            report.options = ";".join(selected_fields)
+            securitys = Security.objects.filter(airport=report.airport)
+            for security in securitys:
+                emailer(
+                    security.user.username,
+                    request.user.username,
+                    security.email,
+                    report.time,
+                )
+            report.save()
+            request.session["my_messages"] = {
+                "success": True,
+                "message": "Report Submitted & Security Have Been Notified",
+            }
+            return redirect("main:verifyPageInitial")
+        else:
+            return render(
+                request, "reportFakePassport.html", {"form": form, "fields": fields}
+            )

@@ -40,11 +40,14 @@
                     <label class="mb-1">गलत क्षेत्र/Incorrect Fields*</label>
                     {% for field in fields %}
                     <div class="col-md-4">
-                        <input type="checkbox" name="fakeFields" id="fakeFields{{ forloop.counter }}"
-                            value="{{ field }}">
-                        <label for="fakeFields{{ forloop.counter }}">{{ field }}</label>
+                        <input type="checkbox" name="{{ field }}" id="fakeFields{{ field }}" value="{{ field }}">
+                        <label for="{{ field }}">{{ field }}</label>
                     </div>
                     {% endfor %}
+                    {% if fields_error %}
+                    <p id="error_fields" class="invalid-feedback"><strong>Minimum one field needs to be
+                            selected</strong></p>
+                    {% endif %}
                     <small id="hint_id_fields" class="form-text text-muted">नकली पासपोर्ट में सभी गलत क्षेत्रों का चयन
                         करें/Select all the incorrect fields in the fake passport</small>
                 </div>
