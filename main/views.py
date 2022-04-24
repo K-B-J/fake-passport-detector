@@ -10,7 +10,6 @@ from .ipfsFiles import *
 from .decorator import *
 from .forms import *
 from .home_dashboard_functions import *
-from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from django.template.loader import get_template
 
@@ -93,23 +92,10 @@ class logoutView(View):
 class homepage(View):
     @redirector("home")
     def get(self, request, *args, **kwargs):
-        if "my_messages" in request.session:
-            my_messages = request.session["my_messages"]
-            del request.session["my_messages"]
-            return render(request, "home.html", {"my_messages": my_messages})
-
-        # Sample syntax for retreving and accessing all the data for charts
-        # You can refer to models.py to know the exact structure
         data = FakePassportReport.objects.all()
         years, series_data_1, series_data_2, last_airport, last_time = dashboard_data(
             data
         )
-
-        # series_data_2, last_airport, last_time = year_cases(data)
-
-        # print(data[0].verifier.user.username)
-        # print(data[0].time)
-
         context = {
             "data": data,
             "years": years,
@@ -118,6 +104,9 @@ class homepage(View):
             "last_airport": last_airport,
             "last_time": last_time,
         }
+        if "my_messages" in request.session:
+            context["my_messages"] = request.session["my_messages"]
+            del request.session["my_messages"]
         return render(request, "home.html", context)
 
 

@@ -5,73 +5,67 @@
 {% block title %}Home{% endblock %}
 
 {% block head %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}" />
-<link href="{% static 'css\nucleo-icons.css' %}" rel="stylesheet">
-<link href="{% static 'css\nucleo-svg.css' %}" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
-<script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/series-label.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script src="https://code.highcharts.com/modules/export-data.js"></script>
-<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+<script src="{% static 'highcharts/highcharts.js' %}"></script>
+<script src="{% static 'highcharts/modules/series-label.js' %}"></script>
+<script src="{% static 'highcharts/modules/exporting.js' %}"></script>
+<script src="{% static 'highcharts/modules/export-data.js' %}"></script>
+<script src="{% static 'highcharts/modules/accessibility.js' %}"></script>
 {% endblock %}
 
 {% block body %}
-<div class="bg-gray-200" style="height:100%">
-    &nbsp;
-    <div class="row my-4 mx-3">
-        <div>
-            <div class="card z-index-2 ">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                    <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
-                        <div class="chart px-1">
-                            <div class="chart-canvas" id="loc-cases" style="height: 300px;">
+<div class="our-charts">
+    <div class="bg-gray-200" style="height:100%">
+
+        &nbsp;
+
+        <div class="row my-4 mx-3">
+            <div>
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+                            <div class="chart px-1">
+                                <div class="chart-canvas" id="loc-cases" style="height: 300px;">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <h6 class="mb-0 ">Passport Location History</h6>
-                    <hr class="dark horizontal">
-                    <div class="d-flex ">
-                        <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm"> Last attempt at {{ last_airport }} </p>
+                    <div class="card-body">
+                        <h6 class="mb-4">Passport Location History</h6>
+                        <div class="d-flex">
+                            <i class="fa-regular fa-clock fa-sm" style="margin-right: 8px; line-height: unset;"></i>
+                            <p class="mb-0 text-sm">Last attempt at {{ last_airport }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    &nbsp;
+        &nbsp;
 
-    <div class="row my-4 mx-3">
-        <div>
-            <div class="card z-index-2 ">
-                <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
-                    <div class="bg-gradient-info shadow-info border-radius-lg py-3 pe-1">
-                        <div class="chart px-1">
-                            <div class="chart-canvas" id="time-cases" style="height: 300px;">
+        <div class="row my-4 mx-3">
+            <div>
+                <div class="card z-index-2 ">
+                    <div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+                        <div class="bg-gradient-info shadow-info border-radius-lg py-3 pe-1">
+                            <div class="chart px-1">
+                                <div class="chart-canvas" id="time-cases" style="height: 300px;">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-body">
-                    <h6 class="mb-0 ">Cases Time History</h6>
-                    <hr class="dark horizontal">
-                    <div class="d-flex ">
-                        <i class="material-icons text-sm my-auto me-1">schedule</i>
-                        <p class="mb-0 text-sm"> Last attempt on {{ last_time }}</p>
-
+                    <div class="card-body">
+                        <h6 class="mb-4">Cases Time History</h6>
+                        <div class="d-flex">
+                            <i class="fa-regular fa-clock fa-sm" style="margin-right: 8px; line-height: unset;"></i>
+                            <p class="mb-0 text-sm">Last attempt on {{ last_time }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
-
 
 <script>
     _years = {{ years | safe }}
@@ -162,7 +156,7 @@
                 }
             }]
         }
-    });
+    })
 
 
     Highcharts.chart('time-cases', {
@@ -236,7 +230,6 @@
             }]
         }
     })
-
 </script>
 
 {% endblock %}
