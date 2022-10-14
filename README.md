@@ -1,7 +1,7 @@
 # Fake Passport Detector
 
 This is a project made by [Kevin Joshi](https://github.com/KevinJ-hub), [Kaushal Binjola](https://github.com/KaushalBinjola) & [Rajas Bondale](https://github.com/Rajas-B).  
-Database used is PostgreSQL, the passport details are stored on Rinkeby test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
+Database used is PostgreSQL, the passport details are stored on Goerli test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
 
 - This is a web app build using django where the passport details are stored on blockchain which when included to the existing passport verification process (conducted at airports) existing in India makes it more robust and easy to detect fake passports.  
 - The app also provides graphs that help analyze and get useful information to track down fake passport reports over time and in various geographical locations.  
@@ -14,7 +14,7 @@ Database used is PostgreSQL, the passport details are stored on Rinkeby test net
 ## Tech Used
 
 - Blockchain
-- Ethereum (Rinkeby Test Network)
+- Ethereum (Goerli Test Network)
 - Solidity
 - Infura
 - Web3.py

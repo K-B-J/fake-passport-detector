@@ -7,7 +7,8 @@ import os
 load_dotenv()
 install_solc("0.6.0")
 
-contract_address = "0x286cc2B2D00827B0a29A655cf387403c79d17151"
+# Deployed on Goerli test network
+contract_address = "0x756F2F9436C4F63E5a0AcD891d817746efE684ec"
 
 with open("./main/passport.sol", "r") as file:
     passport_file = file.read()
@@ -39,9 +40,9 @@ abi = compiled_sol["contracts"]["passport.sol"]["PassportContract"]["abi"]
 contract_id, contract_interface = compiled_sol.popitem()
 
 
-# Web3 to connect to ganache
+# Connecting to Goerli test network through infura
 w3 = Web3(Web3.HTTPProvider(os.environ.get("HTTP_PROVIDER")))
-chain_id = 4
+chain_id = 5
 my_address = "0x7074ee5A5F811Be196D3AFccD960cE15EF2E11Cb"
 private_key = os.environ.get("PRIVATE_KEY")
 
