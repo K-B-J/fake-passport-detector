@@ -1,7 +1,7 @@
 # Fake Passport Detector
 
 This is a project made by [Kevin Joshi](https://github.com/KevinJ-hub), [Kaushal Binjola](https://github.com/KaushalBinjola) & [Rajas Bondale](https://github.com/Rajas-B).  
-Database used is PostgreSQL, the passport details are stored on Goerli test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
+It is hosted on [Render](https://render.com/), you can check it out [here](https://fake-passport-detector.onrender.com), database used is PostgreSQL which is hosted on [ElephantSQL](https://www.elephantsql.com/), the fake passport report images are stored on [cloudinary](https://cloudinary.com/), the passport details are stored on Goerli test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
 
 - This is a web app build using django where the passport details are stored on blockchain which when included to the existing passport verification process (conducted at airports) existing in India makes it more robust and easy to detect fake passports.  
 - The app also provides graphs that help analyze and get useful information to track down fake passport reports over time and in various geographical locations.  
@@ -23,16 +23,32 @@ Database used is PostgreSQL, the passport details are stored on Goerli test netw
 - Django
 - Python
 - PostgreSQL
+- ElephantSQL
+- Cloudinary
 - Javascript
 - Highcharts
 - Bootstrap5
 - Font Awesome
+- Render
 
 ## Architecture
 
 ![Architecture](screenshots/architecture.png)
 
 ## Running this project
+
+You can head over to [fake-passport-detector.onrender.com](https://fake-passport-detector.onrender.com) to try out the app in your browser.  
+  
+**Login Credentials :-**  
+Issuer :-  
+Username: issuer  
+Password: passport@123
+  
+Verifier :-  
+Username: verifier  
+Password: passport@123  
+
+OR  
 
 1. Clone the repository
 2. Create the env file using the env-sample file
