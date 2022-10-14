@@ -1,9 +1,7 @@
 # Fake Passport Detector
 
 This is a project made by [Kevin Joshi](https://github.com/KevinJ-hub), [Kaushal Binjola](https://github.com/KaushalBinjola) & [Rajas Bondale](https://github.com/Rajas-B).  
-It is hosted on [Heroku](https://www.heroku.com), you can check it out [here](https://fake-passport-detector.herokuapp.com), database used is PostgreSQL which is hosted on Heroku as well, the fake passport report images are stored on [cloudinary](https://cloudinary.com/), the passport details are stored on Rinkeby test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
-
-> **NOTE:** Since the app is hosted for free on heroku it goes to sleep on 30 mins of inactivity so there might be a possibility that the app takes a few seconds to load INITIALLY so please be patient.  
+Database used is PostgreSQL, the passport details are stored on Rinkeby test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
 
 - This is a web app build using django where the passport details are stored on blockchain which when included to the existing passport verification process (conducted at airports) existing in India makes it more robust and easy to detect fake passports.  
 - The app also provides graphs that help analyze and get useful information to track down fake passport reports over time and in various geographical locations.  
@@ -16,16 +14,15 @@ It is hosted on [Heroku](https://www.heroku.com), you can check it out [here](ht
 ## Tech Used
 
 - Blockchain
-- Solidity
 - Ethereum (Rinkeby Test Network)
+- Solidity
 - Infura
 - Web3.py
-- WEb3.storage
 - Ipfs
+- Web3.storage
 - Django
 - Python
 - PostgreSQL
-- Cloudinary
 - Javascript
 - Highcharts
 - Bootstrap5
@@ -37,21 +34,8 @@ It is hosted on [Heroku](https://www.heroku.com), you can check it out [here](ht
 
 ## Running this project
 
-You can head over to [https://fake-passport-detector.herokuapp.com](https://fake-passport-detector.herokuapp.com) to try out the app in your browser.  
-  
-**Login Credentials :-**  
-Issuer :-  
-Username: issuer  
-Password: passport@123
-  
-Verifier :-  
-Username: verifier  
-Password: passport@123  
-
-OR  
-
 1. Clone the repository
-2. Create a ".env" file in the root of the project and add the Rinkby Infura Link, Metamask Wallet Private Key, Django Project Secret Key, DB Credentials, Web.storage IPFS Token, Cloudinary Credentials, Email Credentials in it (HTTP_PROVIDER, PRIVATE_KEY, SECRET_KEY, DB_NAME, DB_USERNAME, DB_PASSWORD, DB_HOST, IPFS_TOKEN, CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, EMAIL_ID, EMAIL_PASSWORD)
+2. Create the env file using the env-sample file
 3. Run the following command from the root of the project
 
 ```bash
