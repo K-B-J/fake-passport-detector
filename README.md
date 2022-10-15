@@ -3,6 +3,8 @@
 This is a project made by [Kevin Joshi](https://github.com/KevinJ-hub), [Kaushal Binjola](https://github.com/KaushalBinjola) & [Rajas Bondale](https://github.com/Rajas-B).  
 It is hosted on [Render](https://render.com/), you can check it out [here](https://fake-passport-detector.onrender.com), database used is PostgreSQL which is hosted on [ElephantSQL](https://www.elephantsql.com/), the fake passport report images are stored on [cloudinary](https://cloudinary.com/), the passport details are stored on Goerli test network with the profile image and signature image being stored on ipfs which is deployed using the api provided by [web3.storage](https://web3.storage/). The fake passport analysis graphs are generated using [Highcharts](https://www.highcharts.com/).  
 
+> **NOTE:** Since the app is hosted for free on render it goes to sleep on 15 mins of inactivity so there might be a possibility that the app takes a few seconds to load INITIALLY so please be patient.  
+
 - This is a web app build using django where the passport details are stored on blockchain which when included to the existing passport verification process (conducted at airports) existing in India makes it more robust and easy to detect fake passports.  
 - The app also provides graphs that help analyze and get useful information to track down fake passport reports over time and in various geographical locations.  
 - There are three main authorities, the passport issuing authority, passport verifying authority and the security officials present at the airports.  
