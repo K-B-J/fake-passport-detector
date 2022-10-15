@@ -41,7 +41,9 @@ contract_id, contract_interface = compiled_sol.popitem()
 
 
 # Connecting to Goerli test network through infura
-w3 = Web3(Web3.HTTPProvider(os.environ.get("HTTP_PROVIDER")))
+w3 = Web3(
+    Web3.HTTPProvider(os.environ.get("HTTP_PROVIDER"), request_kwargs={"verify": False})
+)
 chain_id = 5
 my_address = "0x7074ee5A5F811Be196D3AFccD960cE15EF2E11Cb"
 private_key = os.environ.get("PRIVATE_KEY")
